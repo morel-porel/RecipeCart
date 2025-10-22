@@ -32,7 +32,7 @@ Before you begin, ensure you have the following software installed on your syste
 git clone https://github.com/morel-porel/RecipeCart.git
 cd RecipeCart/recipecart-frontend
 npm install
-npm run dev'''
+npm run dev
 
 Open your web browser and navigate to this URL. You should see the RecipeCart login page.
 Local: http://localhost:5173/
