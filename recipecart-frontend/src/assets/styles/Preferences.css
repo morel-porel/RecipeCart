@@ -1,0 +1,121 @@
+.onboarding-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.onboarding-layout-left {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.onboarding-layout-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.onboarding-layout-right {
+  flex: 1.5; /* Give more space to the content */
+  display: flex;
+  flex-direction: column;
+  padding: 40px 60px;
+}
+
+.preferences-container {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+.preferences-header {
+  margin-bottom: 50px;
+}
+
+.preferences-header .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-bottom: 30px;
+}
+
+.preferences-header .logo img {
+  width: 50px;
+}
+
+.preferences-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.preferences-header p {
+  font-size: 16px;
+  color: #888;
+}
+
+.preference-section {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.preference-section h2 {
+  font-size: 20px;
+  color: #4CAF50;
+  margin-bottom: 15px;
+}
+
+.options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.preference-option {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.preference-option:hover {
+  border-color: #4CAF50;
+}
+
+.preference-option.selected {
+  background-color: #4CAF50;
+  color: #fff;
+  border-color: #4CAF50;
+}
+
+.preferences-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.preferences-actions .skip-link {
+  color: #888;
+  text-decoration: none;
+}
+
+.preferences-actions .save-button {
+  padding: 12px 30px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}

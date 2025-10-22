@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { useState } from 'react';
 import InputField from './InputField';
 import Button from './Button';
@@ -9,8 +11,7 @@ function LoginForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // ** API CALL WILL GO HERE **
-    // This is where we connect to our Spring Boot backend 
+    // ** API CALL **
     console.log('Logging in with:', { email, password });
   };
 
@@ -33,7 +34,7 @@ function LoginForm() {
       <a href="#" className="forgot-password-link">Forgot Password</a>
       <Button type="submit">Log In</Button>
       <p className="auth-switch-text">
-        Don't have an account? <a href="#">Sign in</a>
+        Don't have an account? <Link to="/register">Sign Up</Link>
       </p>
     </form>
   );
