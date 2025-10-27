@@ -18,6 +18,9 @@ public class Ingredient {
 
     private String unit; // e.g., "g", "ml", "pcs"
 
+    @Column(nullable = false)
+    private Double price;
+
     public Ingredient() {}
 
     public Ingredient(String name, int stockLevel, String unit) {
@@ -56,5 +59,13 @@ public class Ingredient {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

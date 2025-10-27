@@ -30,8 +30,10 @@ public class Recipe {
     @Column(name = "tag")
     private Set<String> dietaryTags;
 
-    @Column(name = "allergen_info")
-    private String allergenInfo;
+    @ElementCollection
+    @CollectionTable(name = "recipe_allergens", joinColumns = @JoinColumn(name = "recipe_id"))
+    @Column(name = "allergen")
+    private Set<String> allergenInfo;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;
@@ -39,7 +41,8 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(String name, String instructions, String nutritionFacts, String cuisine, Set<String> dietaryTags, String allergenInfo, List<RecipeIngredient> recipeIngredients) {
+    public Recipe(Long id, String name, String instructions, String nutritionFacts, String cuisine, Set<String> dietaryTags, Set<String> allergenInfo, List<RecipeIngredient> recipeIngredients) {
+        this.id = id;
         this.name = name;
         this.instructions = instructions;
         this.nutritionFacts = nutritionFacts;
@@ -97,11 +100,11 @@ public class Recipe {
         this.dietaryTags = dietaryTags;
     }
 
-    public String getAllergenInfo() {
+    public Set<String> getAllergenInfo() {
         return allergenInfo;
     }
 
-    public void setAllergenInfo(String allergenInfo) {
+    public void setAllergenInfo(Set<String> allergenInfo) {
         this.allergenInfo = allergenInfo;
     }
 

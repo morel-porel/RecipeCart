@@ -1,27 +1,30 @@
 package com.palepo.recipecart.service;
 
+import com.palepo.recipecart.OrderStatus;
 import com.palepo.recipecart.entity.*;
 import com.palepo.recipecart.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderService {
 
     private final UserRepository userRepository;
-    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final IngredientRepository ingredientRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
     public OrderService(UserRepository userRepository,
-                        RecipeIngredientRepository recipeIngredientRepository,
+                        IngredientRepository ingredientRepository,
                         OrderRepository orderRepository,
                         OrderItemRepository orderItemRepository) {
         this.userRepository = userRepository;
-        this.recipeIngredientRepository = recipeIngredientRepository;
+        this.ingredientRepository = ingredientRepository;
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
     }
@@ -34,10 +37,12 @@ public class OrderService {
 
         double totalPrice = 0.0;
 
+        List<OrderItem> managedOrderItems = new ArrayList<>();
+
         // Step 2: Process each OrderItem
         for (OrderItem orderItem : orderRequest.getOrderItems()) {
-            RecipeIngredient ingredient = recipeIngredientRepository.findById(orderItem.getRecipeIngredient().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("RecipeIngredient not found"));
+            Ingredient ingredient = ingredientRepository.findById(orderItem.getIngredient().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
 
             int requestedQuantity = orderItem.getQuantity();
 
@@ -48,30 +53,35 @@ public class OrderService {
 
             // Decrement stock
             ingredient.setStockLevel(ingredient.getStockLevel() - requestedQuantity);
-            recipeIngredientRepository.save(ingredient);
+            ingredientRepository.save(ingredient);
 
             // Compute item price
             double itemTotal = ingredient.getPrice() * requestedQuantity;
-            orderItem.setPrice(itemTotal);
-            orderItem.setRecipeIngredient(ingredient);
-            orderItem.setOrder(orderRequest);
+
+            OrderItem newItem = new OrderItem();
+            newItem.setQuantity(requestedQuantity);
+            newItem.setPriceAtPurchase(itemTotal);
+            newItem.setIngredient(ingredient);
+            managedOrderItems.add(newItem);
 
             totalPrice += itemTotal;
         }
 
         // Step 3: Set totals and save order
-        orderRequest.setUser(user);
-        orderRequest.setTotalPrice(totalPrice);
-
-        Order savedOrder = orderRepository.save(orderRequest);
+        Order savedOrder = new Order();
+        savedOrder.setUser(user);
+        savedOrder.setOrderDate(LocalDateTime.now());
+        savedOrder.setTotalAmount(totalPrice);
+        savedOrder.setStatus(OrderStatus.PROCESSING);
+        savedOrder.setPaymentType(orderRequest.getPaymentType());
+        savedOrder.setOrderItems(managedOrderItems);
 
         // Step 4: Save each OrderItem
-        for (OrderItem orderItem : orderRequest.getOrderItems()) {
+        for (OrderItem orderItem : managedOrderItems) {
             orderItem.setOrder(savedOrder);
-            orderItemRepository.save(orderItem);
         }
 
-        return savedOrder;
+        return orderRepository.save(savedOrder);
     }
 
     public List<Order> getOrderHistory(Long userId) {

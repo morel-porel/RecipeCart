@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/ingredients")
 @CrossOrigin(origins = "http://localhost:5173")
 public class IngredientController {
 
@@ -17,16 +17,15 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @PostMapping("/ingredients")
+    @PostMapping
     public Ingredient createIngredient(@RequestBody Ingredient ingredient){
         return ingredientService.createIngredient(ingredient);
     }
 
-    @GetMapping("/ingredients")
-    public List<Ingredient> getIngredients(@PathVariable Long userId){
+    @GetMapping
+    public List<Ingredient> getAllIngredients(){
         return ingredientService.getAllIngredients();
     }
-
 
 
 }
