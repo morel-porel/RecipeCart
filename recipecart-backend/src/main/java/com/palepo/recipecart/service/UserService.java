@@ -69,7 +69,7 @@ public class UserService {
         // Copy fields from incoming profile object
         existing.setAllergies(userProfileData.getAllergies());
         existing.setDietaryPlan(userProfileData.getDietaryPlan());
-        existing.setPreferences(userProfileData.getPreferences());
+        //existing.setPreferences(userProfileData.getPreferences());
         // copy other fields as needed
 
         UserProfile saved = userProfileRepository.save(existing);
