@@ -28,6 +28,9 @@ public class User {
     @PrimaryKeyJoinColumn
     private UserProfile userProfile;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ShoppingCart shoppingCart;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
 
@@ -89,6 +92,14 @@ public class User {
 
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
     public List<Order> getOrders() {
