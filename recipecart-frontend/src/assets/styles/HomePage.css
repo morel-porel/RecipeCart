@@ -1,0 +1,38 @@
+/* Add some basic styles to get the layout working */
+.main-content {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+.filter-sidebar {
+  flex: 1;
+}
+
+.recipes-area {
+  flex: 3;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.recipe-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.recipe-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.recipe-card-info {
+  padding: 10px;
+}
