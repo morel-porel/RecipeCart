@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import PreferencesPage from './pages/PreferencesPage.jsx';
 import './index.css';
+import HomePage from './pages/HomePage';
+import RecipeDetailPage from './pages/RecipeDetailPage';
 
 // 1. Define the application's routes
 const router = createBrowserRouter([
@@ -30,6 +32,8 @@ const router = createBrowserRouter([
       path: 'preferences',
       element: <PreferencesPage />,
       },
+      { path: 'home', element: <HomePage /> },
+      { path: 'recipes/:id', element: <RecipeDetailPage /> },
     ],
   },
 ]);

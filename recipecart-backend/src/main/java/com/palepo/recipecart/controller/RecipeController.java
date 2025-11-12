@@ -2,6 +2,7 @@ package com.palepo.recipecart.controller;
 
 import com.palepo.recipecart.entity.Recipe;
 import com.palepo.recipecart.service.RecipeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,10 +21,15 @@ public class RecipeController {
     @GetMapping
     public List<Recipe> searchOrGetAllRecipes(
             @RequestParam(required = false) String cuisine,
-            @RequestParam(required = false) Set<String> dietaryTags) {
+            @RequestParam(required = false) Set<String> dietaryTags,
+            @RequestParam(required = false) String excludeAllergen) {
+        return recipeService.searchRecipes(cuisine, dietaryTags, excludeAllergen);
+    }
 
-        // This single endpoint now handles both getting all recipes and searching
-        return recipeService.searchRecipes(cuisine, dietaryTags);
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        return ResponseEntity.ok(recipe);
     }
 
     @PostMapping

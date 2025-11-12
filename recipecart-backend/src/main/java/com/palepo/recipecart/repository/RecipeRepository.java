@@ -15,6 +15,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByDietaryTagsIn(Set<String> dietaryTags);
     List<Recipe> findByCuisineIgnoreCase(String cuisine);
     List<Recipe> findByCuisineIgnoreCaseAndDietaryTagsIn(String cuisine, Set<String> dietaryTags);
+    /**
+     * Finds all recipes that DO NOT contain the specified allergen in their allergenInfo set.
+     * @param allergen The allergen to exclude (e.g., "NUT", "DAIRY").
+     * @return A list of recipes safe from that allergen.
+     */
     @Query("SELECT r FROM Recipe r WHERE :allergen NOT IN elements(r.allergenInfo)")
     List<Recipe> findAllByAllergenInfoNotContaining(@Param("allergen") String allergen);
 }

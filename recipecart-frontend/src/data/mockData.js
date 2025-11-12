@@ -1,0 +1,42 @@
+export const mockRecipes = [
+  {
+    id: 1,
+    name: 'Thai Basil Tofu Stir Fry',
+    instructions: 'Detailed instructions go here...',
+    nutritionFacts: 'Calories: 450, Protein: 25g',
+    cuisine: 'Thai',
+    dietaryTags: ['VEGAN', 'GLUTEN_FREE'],
+    allergenInfo: ['SOY'],
+    imageUrl: 'https://via.placeholder.com/300x200.png?text=Thai+Food', // Placeholder image
+  },
+  {
+    id: 2,
+    name: 'Kung Pao Shrimp',
+    instructions: 'Stir fry shrimp with peanuts and vegetables...',
+    nutritionFacts: 'Calories: 550, Protein: 35g',
+    cuisine: 'Chinese',
+    dietaryTags: ['LOW_CARB'],
+    allergenInfo: ['SHELLFISH', 'NUT'],
+    imageUrl: 'https://via.placeholder.com/300x200.png?text=Chinese+Food',
+  },
+  {
+    id: 3,
+    name: 'Mexican Chicken',
+    instructions: 'Bake chicken with Mexican spices...',
+    nutritionFacts: 'Calories: 600, Protein: 45g',
+    cuisine: 'Mexican',
+    dietaryTags: [],
+    allergenInfo: [],
+    imageUrl: 'https://via.placeholder.com/300x200.png?text=Mexican+Food',
+  },
+  {
+    id: 4,
+    name: 'Greek Feta Salad',
+    instructions: 'Combine vegetables with feta cheese...',
+    nutritionFacts: 'Calories: 350, Protein: 15g',
+    cuisine: 'Greek',
+    dietaryTags: ['VEGETARIAN', 'GLUTEN_FREE'],
+    allergenInfo: ['DAIRY'],
+    imageUrl: 'https://via.placeholder.com/300x200.png?text=Greek+Food',
+  },
+];
