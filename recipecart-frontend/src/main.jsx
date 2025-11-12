@@ -6,11 +6,16 @@ import App from './App.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import PreferencesPage from './pages/PreferencesPage.jsx';
+
+import Cart from './pages/Cart.jsx';
+import Checkout from './pages/Checkout.jsx';
+import OrderHistory from './pages/OrderHistory.jsx';
+
 import './index.css';
 import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 
-// 1. Define the application's routes
+// Define the application's routes
 const router = createBrowserRouter([
   {
     path: '/',
@@ -29,15 +34,29 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       {
-      path: 'preferences',
-      element: <PreferencesPage />,
+        path: 'preferences',
+        element: <PreferencesPage />,
+      },
+      // ✅ ADD YOUR NEW ROUTES HERE
+      {
+        path: 'cart',
+        element: <Cart />,
+      },
+      {
+        path: 'checkout',
+        element: <Checkout />,
+      },
+      {
+        path: 'orders',
+        element: <OrderHistory />,
       },
       { path: 'home', element: <HomePage /> },
       { path: 'recipes/:id', element: <RecipeDetailPage /> },
     ],
   },
 ]);
-// 2. Render the RouterProvider with the defined router
+
+// Render the RouterProvider with the defined router
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RouterProvider router={router} />
