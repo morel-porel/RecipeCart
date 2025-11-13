@@ -1,8 +1,9 @@
 function HeroSection() {
   return (
-    <div className="hero-section">
-      <img src="hero-background.jpg" alt="img" />
-    </div>
-    );
+    <section className="hero-section">
+      {/* Content for the hero section can be added here */}
+    </section>
+  );
 }
+
 export default HeroSection;
