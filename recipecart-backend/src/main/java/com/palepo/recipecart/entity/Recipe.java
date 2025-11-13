@@ -25,17 +25,17 @@ public class Recipe {
 
     private String cuisine;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "recipe_dietary_tags", joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "tag")
     private Set<String> dietaryTags;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "recipe_allergens", joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "allergen")
     private Set<String> allergenInfo;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<RecipeIngredient> recipeIngredients;
 
     public Recipe() {
