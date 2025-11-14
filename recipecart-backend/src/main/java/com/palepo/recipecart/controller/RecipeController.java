@@ -2,6 +2,7 @@ package com.palepo.recipecart.controller;
 
 import com.palepo.recipecart.entity.Recipe;
 import com.palepo.recipecart.service.RecipeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +34,12 @@ public class RecipeController {
     }
 
     @PostMapping
-    public Recipe createRecipe(@RequestBody Recipe recipe) {
+    public Recipe createRecipe(@Valid @RequestBody Recipe recipe) {
         return recipeService.createRecipe(recipe);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe recipeDetails) {
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @Valid @RequestBody Recipe recipeDetails) {
         Recipe updatedRecipe = recipeService.updateRecipe(id, recipeDetails);
         return ResponseEntity.ok(updatedRecipe);
     }

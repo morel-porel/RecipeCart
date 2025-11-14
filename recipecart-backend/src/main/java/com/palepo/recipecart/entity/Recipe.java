@@ -1,6 +1,8 @@
 package com.palepo.recipecart.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Set;
@@ -13,9 +15,12 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Recipe name cannot be blank")
+    @Size(min = 3, max = 100, message = "Recipe name must be between 3 and 100 characters")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotBlank(message = "Instructions cannot be blank")
     @Lob
     @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
@@ -23,6 +28,7 @@ public class Recipe {
     @Column(name = "nutrition_facts")
     private String nutritionFacts;
 
+    @NotBlank(message = "Cuisine cannot be blank")
     private String cuisine;
 
     @ElementCollection(fetch = FetchType.EAGER)
