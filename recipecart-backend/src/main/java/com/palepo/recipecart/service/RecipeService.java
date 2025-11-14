@@ -33,21 +33,18 @@ public class RecipeService {
      * @return A list of recipes that match the filter criteria.
      */
     public List<Recipe> searchRecipes(String cuisine, Set<String> dietaryTags, String excludeAllergen) {
-        boolean hasCuisine = cuisine != null && !cuisine.trim().isEmpty();
-        boolean hasTags = dietaryTags != null && !dietaryTags.isEmpty();
-        boolean hasAllergenExclusion = excludeAllergen != null && !excludeAllergen.trim().isEmpty();
 
-        if (hasCuisine) {
-            return recipeRepository.findByCuisineIgnoreCase(cuisine);
-        }
-        if (hasTags) {
-            return recipeRepository.findByDietaryTagsIn(dietaryTags);
-        }
-        if (hasAllergenExclusion) {
-            return recipeRepository.findAllByAllergenInfoNotContaining(excludeAllergen);
-        }
-            // If no filters, return everything
-            return recipeRepository.findAll();
+            boolean hasAnyFilter = (cuisine != null && !cuisine.trim().isEmpty()) ||
+                    (dietaryTags != null && !dietaryTags.isEmpty()) ||
+                    (excludeAllergen != null && !excludeAllergen.trim().isEmpty());
+
+            if (hasAnyFilter) {
+                // Call your single, powerful custom method
+                return recipeRepository.findRecipesByFilters(cuisine, dietaryTags, excludeAllergen);
+            } else {
+                // If no filters are provided, return everything
+                return recipeRepository.findAll();
+            }
         }
 
 
