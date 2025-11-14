@@ -36,4 +36,17 @@ public class RecipeController {
     public Recipe createRecipe(@RequestBody Recipe recipe) {
         return recipeService.createRecipe(recipe);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe recipeDetails) {
+        Recipe updatedRecipe = recipeService.updateRecipe(id, recipeDetails);
+        return ResponseEntity.ok(updatedRecipe);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        recipeService.deleteRecipe(id);
+        // Return a 204 No Content status, which is the standard for a successful deletion
+        return ResponseEntity.noContent().build();
+    }
 }

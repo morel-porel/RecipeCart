@@ -4,6 +4,7 @@ import com.palepo.recipecart.entity.Ingredient;
 import com.palepo.recipecart.entity.Recipe;
 import com.palepo.recipecart.repository.RecipeRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +46,37 @@ public class RecipeService {
                 // If no filters are provided, return everything
                 return recipeRepository.findAll();
             }
-        }
+    }
 
+    @Transactional // Good practice for methods that modify data
+    public Recipe updateRecipe(Long id, Recipe recipeDetails) {
+        // 1. Find the existing recipe in the database
+        Recipe existingRecipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Recipe not found with ID: " + id));
+
+        // 2. Update the fields of the existing recipe with the new details
+        existingRecipe.setName(recipeDetails.getName());
+        existingRecipe.setInstructions(recipeDetails.getInstructions());
+        existingRecipe.setNutritionFacts(recipeDetails.getNutritionFacts());
+        existingRecipe.setCuisine(recipeDetails.getCuisine());
+
+        existingRecipe.getDietaryTags().clear();
+        existingRecipe.getDietaryTags().addAll(recipeDetails.getDietaryTags());
+
+        existingRecipe.getAllergenInfo().clear();
+        existingRecipe.getAllergenInfo().addAll(recipeDetails.getAllergenInfo());
+
+        // 3. Save the updated recipe back to the database
+        return recipeRepository.save(existingRecipe);
+    }
+
+    public void deleteRecipe(Long id) {
+        // 1. Check if the recipe exists before trying to delete it
+        if (!recipeRepository.existsById(id)) {
+            throw new EntityNotFoundException("Recipe not found with ID: " + id);
+        }
+        // 2. Delete the recipe
+        recipeRepository.deleteById(id);
+    }
 
 }
