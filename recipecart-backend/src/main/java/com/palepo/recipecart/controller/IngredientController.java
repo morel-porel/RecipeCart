@@ -2,6 +2,7 @@ package com.palepo.recipecart.controller;
 
 import com.palepo.recipecart.entity.Ingredient;
 import com.palepo.recipecart.service.IngredientService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class IngredientController {
     }
 
     @PostMapping
-    public Ingredient createIngredient(@RequestBody Ingredient ingredient){
+    public Ingredient createIngredient(@Valid @RequestBody Ingredient ingredient){
         return ingredientService.createIngredient(ingredient);
     }
 
@@ -30,7 +31,7 @@ public class IngredientController {
 
     // PUT /api/ingredients/{id} -> Updates an existing ingredient
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredientDetails) {
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @Valid @RequestBody Ingredient ingredientDetails) {
         Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredientDetails);
         return ResponseEntity.ok(updatedIngredient);
     }
