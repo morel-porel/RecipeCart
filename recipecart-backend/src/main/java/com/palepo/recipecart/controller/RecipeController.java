@@ -21,10 +21,11 @@ public class RecipeController {
 
     @GetMapping
     public List<Recipe> searchOrGetAllRecipes(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String cuisine,
             @RequestParam(required = false) Set<String> dietaryTags,
             @RequestParam(required = false) String excludeAllergen) {
-        return recipeService.searchRecipes(cuisine, dietaryTags, excludeAllergen);
+        return recipeService.searchRecipes(name, cuisine, dietaryTags, excludeAllergen);
     }
 
     @GetMapping("/{id}")

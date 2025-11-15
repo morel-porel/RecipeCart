@@ -12,4 +12,5 @@ import java.util.Set;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeRepositoryCustom {
+    List<Recipe> findByNameContainingIgnoreCase(String name);
 }

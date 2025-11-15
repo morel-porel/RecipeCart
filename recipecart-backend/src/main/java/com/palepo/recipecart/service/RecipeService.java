@@ -33,19 +33,24 @@ public class RecipeService {
      * @param dietaryTags A set of dietary tags to filter by (e.g., "VEGAN"). Can be null or empty.
      * @return A list of recipes that match the filter criteria.
      */
-    public List<Recipe> searchRecipes(String cuisine, Set<String> dietaryTags, String excludeAllergen) {
+    public List<Recipe> searchRecipes(String name, String cuisine, Set<String> dietaryTags, String excludeAllergen) {
 
-            boolean hasAnyFilter = (cuisine != null && !cuisine.trim().isEmpty()) ||
-                    (dietaryTags != null && !dietaryTags.isEmpty()) ||
-                    (excludeAllergen != null && !excludeAllergen.trim().isEmpty());
+        boolean hasName = name != null && !name.trim().isEmpty();
+        if (hasName) {
+            return recipeRepository.findByNameContainingIgnoreCase(name);
+        }
 
-            if (hasAnyFilter) {
+        boolean hasAnyFilter = (cuisine != null && !cuisine.trim().isEmpty()) ||
+                (dietaryTags != null && !dietaryTags.isEmpty()) ||
+                (excludeAllergen != null && !excludeAllergen.trim().isEmpty());
+
+        if (hasAnyFilter) {
                 // Call your single, powerful custom method
-                return recipeRepository.findRecipesByFilters(cuisine, dietaryTags, excludeAllergen);
-            } else {
+            return recipeRepository.findRecipesByFilters(cuisine, dietaryTags, excludeAllergen);
+        } else {
                 // If no filters are provided, return everything
-                return recipeRepository.findAll();
-            }
+            return recipeRepository.findAll();
+        }
     }
 
     @Transactional // Good practice for methods that modify data
