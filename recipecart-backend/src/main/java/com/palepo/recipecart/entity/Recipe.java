@@ -44,10 +44,13 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<RecipeIngredient> recipeIngredients;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public Recipe() {
     }
 
-    public Recipe(Long id, String name, String instructions, String nutritionFacts, String cuisine, Set<String> dietaryTags, Set<String> allergenInfo, List<RecipeIngredient> recipeIngredients) {
+    public Recipe(Long id, String name, String instructions, String nutritionFacts, String cuisine, Set<String> dietaryTags, Set<String> allergenInfo, List<RecipeIngredient> recipeIngredients, String imageUrl) {
         this.id = id;
         this.name = name;
         this.instructions = instructions;
@@ -56,6 +59,15 @@ public class Recipe {
         this.dietaryTags = dietaryTags;
         this.allergenInfo = allergenInfo;
         this.recipeIngredients = recipeIngredients;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
