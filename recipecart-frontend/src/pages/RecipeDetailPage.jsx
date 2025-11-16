@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/RecipeDetail.css';
 
@@ -20,15 +21,21 @@ const NutritionBar = ({ label, displayValue, numericValue, max }) => {
 
 function RecipeDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const [nutritionData, setNutritionData] = useState(null);
+
+  // Replace with actual user ID from your auth system
+  const userId = 1;
+  const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/recipes/${id}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/${id}`);
         if (!response.ok) throw new Error('Recipe not found');
         const data = await response.json();
         setRecipe(data);
@@ -50,9 +57,46 @@ function RecipeDetailPage() {
     fetchRecipe();
   }, [id]);
 
-  const handleAddIngredientsToCart = () => {
-    console.log("Adding ingredients to cart:", recipe.recipeIngredients);
-    alert("Ingredients added to cart! (Check console for details)");
+  const handleAddIngredientsToCart = async () => {
+    if (!recipe || !recipe.recipeIngredients) {
+      alert('No ingredients to add');
+      return;
+    }
+
+    setAddingToCart(true);
+
+    try {
+      // Add each ingredient to the cart
+      const addPromises = recipe.recipeIngredients.map(async (item) => {
+        try {
+          await axios.post(`${API_BASE_URL}/cart/${userId}/items`, {
+            ingredientId: item.ingredient.id,
+            quantity: Math.ceil(item.quantity) // Round up to nearest whole number
+          });
+        } catch (error) {
+          // If ingredient already in cart, it will update quantity
+          console.error(`Error adding ${item.ingredient.name}:`, error);
+          throw error;
+        }
+      });
+
+      await Promise.all(addPromises);
+
+      alert(`Successfully added ${recipe.recipeIngredients.length} ingredients to cart!`);
+      
+      // Ask user if they want to go to cart
+      const goToCart = window.confirm('Ingredients added! Go to cart now?');
+      if (goToCart) {
+        navigate('/cart');
+      }
+
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to add ingredients to cart';
+      alert(errorMessage);
+      console.error('Error adding ingredients to cart:', error);
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   if (loading) {
@@ -101,7 +145,7 @@ function RecipeDetailPage() {
               <NutritionBar label="Fat" displayValue={nutritionData.fat.display} numericValue={nutritionData.fat.value} max={70} />
             </>
           ) : (
-            <p>{recipe.nutritionFacts}</p> // Fallback to show the raw string if parsing fails
+            <p>{recipe.nutritionFacts}</p>
           )}
         </aside>
 
@@ -118,8 +162,12 @@ function RecipeDetailPage() {
           <section className="ingredients-section">
             <div className="ingredients-section-header">
               <h2>Ingredients</h2>
-              <button className="add-to-cart-btn" onClick={handleAddIngredientsToCart}>
-                Add Ingredients to Cart
+              <button 
+                className="add-to-cart-btn" 
+                onClick={handleAddIngredientsToCart}
+                disabled={addingToCart}
+              >
+                {addingToCart ? 'Adding...' : 'Add Ingredients to Cart'}
               </button>
             </div>
             <ul className="ingredients-list">

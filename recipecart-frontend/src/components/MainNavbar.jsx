@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/logo.svg';
 
 function MainNavbar({ onSearch }) {
   const [localSearchTerm, setLocalSearchTerm] = useState('');
@@ -12,7 +13,7 @@ function MainNavbar({ onSearch }) {
   return (
     <nav className="main-navbar">
       <div className="navbar-left">
-        <Link to="/home" className="navbar-logo">RecipeCart</Link>
+        <Link to="/home" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#509E2F', fontSize: '1.5rem', fontWeight: 'bold' }}><img src={logo} alt="RecipeCart Logo" style={{ height: '40px', width: 'auto' }} />RecipeCart</Link>
         <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input 
             type="text" 

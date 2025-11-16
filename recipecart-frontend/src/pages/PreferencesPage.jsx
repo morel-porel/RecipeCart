@@ -3,32 +3,37 @@ import OnboardingLayout from '../components/OnboardingLayout';
 import PreferenceOption from '../components/PreferenceOption';
 import { allergyOptions, dietOptions, cuisineOptions } from '../data/preferenceData';
 import colorfulLogo from '../assets/images/logo.svg'; // Reuse your logo
+import { useNavigate } from 'react-router-dom';
 
 function PreferencesPage() {
   const [selectedAllergies, setSelectedAllergies] = useState(new Set());
   const [selectedDiets, setSelectedDiets] = useState(new Set());
   const [selectedCuisines, setSelectedCuisines] = useState(new Set());
 
-  // Generic handler to toggle items in a Set
+  const navigate = useNavigate();   // <-- ADD THIS
+
   const handleToggle = (setter, state, value) => {
     const newSet = new Set(state);
-    if (newSet.has(value)) {
-      newSet.delete(value);
-    } else {
-      newSet.add(value);
-    }
+    newSet.has(value) ? newSet.delete(value) : newSet.add(value);
     setter(newSet);
   };
-  
+
   const handleSave = () => {
     const preferences = {
-        allergies: Array.from(selectedAllergies),
-        diets: Array.from(selectedDiets),
-        cuisines: Array.from(selectedCuisines),
+      allergies: Array.from(selectedAllergies),
+      diets: Array.from(selectedDiets),
+      cuisines: Array.from(selectedCuisines),
     };
+
     console.log("Saving Preferences:", preferences);
-    // Here you would navigate to the main app, e.g., navigate('/dashboard');
-  }
+
+    navigate('/home');   // <-- REDIRECT AFTER SAVE
+  };
+
+  const handleSkip = (e) => {
+    e.preventDefault();
+    navigate('/home');   // <-- REDIRECT AFTER SKIP
+  };
 
   return (
     <OnboardingLayout>
@@ -84,9 +89,14 @@ function PreferencesPage() {
           </div>
         </section>
 
-        <footer className="preferences-actions">
-          <a href="#" className="skip-link">Skip for now →</a>
-          <button className="save-button" onClick={handleSave}>Save & Continue</button>
+         <footer className="preferences-actions">
+          <a href="#" onClick={handleSkip} className="skip-link">
+            Skip for now →
+          </a>
+
+          <button className="save-button" onClick={handleSave}>
+            Save & Continue
+          </button>
         </footer>
       </div>
     </OnboardingLayout>
