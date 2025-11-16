@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
+import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
 
 const OrderHistory = () => {
@@ -73,7 +73,7 @@ const OrderHistory = () => {
   if (loading) {
     return (
       <div className="page-container">
-        <Navbar />
+        <MainNavbar />
         <div className="loading-container">
           <p>Loading orders...</p>
         </div>
@@ -83,7 +83,7 @@ const OrderHistory = () => {
 
   return (
     <div className="page-container">
-      <Navbar />
+      <MainNavbar />
       
       <div className="orders-page">
         <h1 className="page-title">Order History</h1>

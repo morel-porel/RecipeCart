@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
 import '../assets/styles/Cart.css';
+import MainNavbar from '../components/MainNavbar';
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
@@ -74,7 +74,7 @@ const Cart = () => {
   if (loading) {
     return (
       <div className="page-container">
-        <Navbar />
+        <MainNavbar />
         <div className="loading-container">
           <p>Loading cart...</p>
         </div>
@@ -84,7 +84,7 @@ const Cart = () => {
 
   return (
     <div className="page-container">
-      <Navbar />
+      <MainNavbar />
       
       <div className="cart-page">
         <h1 className="page-title">Shopping Cart</h1>
@@ -99,7 +99,7 @@ const Cart = () => {
           <div className="empty-cart">
             <p>Your cart is empty</p>
             <button
-              onClick={() => navigate('/ingredients')}
+              onClick={() => navigate('/home')}
               className="primary-button"
             >
               Start Shopping

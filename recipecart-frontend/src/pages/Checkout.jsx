@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
+import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/Checkout.css';
 
 const Checkout = () => {
@@ -88,7 +88,7 @@ const Checkout = () => {
   if (loading) {
     return (
       <div className="page-container">
-        <Navbar />
+        <MainNavbar />
         <div className="loading-container">
           <p>Loading...</p>
         </div>
@@ -98,7 +98,7 @@ const Checkout = () => {
 
   return (
     <div className="page-container">
-      <Navbar />
+      <MainNavbar />
       
       <div className="checkout-page">
         <h1 className="page-title">

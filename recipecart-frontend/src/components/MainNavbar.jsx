@@ -12,7 +12,7 @@ function MainNavbar() {
       </div>
       <div className="navbar-right">
         {/* We'll make these icons functional later */}
-        <span>🛒</span>
+        <Link to="/cart" style={{ textDecoration: 'none', color: 'inherit' }}>🛒</Link>
         <span>👤</span>
       </div>
     </nav>
