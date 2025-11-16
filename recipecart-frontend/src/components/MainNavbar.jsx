@@ -1,14 +1,27 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function MainNavbar() {
+function MainNavbar({ onSearch }) {
+  const [localSearchTerm, setLocalSearchTerm] = useState('');
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault(); // Prevent the form from causing a page reload
+    onSearch(localSearchTerm); // Call the parent's handler function
+  };
+
   return (
     <nav className="main-navbar">
       <div className="navbar-left">
         <Link to="/home" className="navbar-logo">RecipeCart</Link>
-        <div className="search-bar">
-          <input type="text" placeholder="Search for recipes..." />
-          <button>🔍</button>
-        </div>
+        <form className="search-bar" onSubmit={handleSearchSubmit}>
+          <input 
+            type="text" 
+            placeholder="Search for recipes..."
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
+          />
+          <button type="submit">🔍</button>
+        </form>
       </div>
       <div className="navbar-right">
         {/* We'll make these icons functional later */}
