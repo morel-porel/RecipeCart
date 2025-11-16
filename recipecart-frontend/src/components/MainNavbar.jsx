@@ -24,7 +24,8 @@ function MainNavbar({ onSearch }) {
         </form>
       </div>
       <div className="navbar-right">
-        <span>🛒</span>
+        {/* We'll make these icons functional later */}
+        <Link to="/cart" style={{ textDecoration: 'none', color: 'inherit' }}>🛒</Link>
         <span>👤</span>
       </div>
     </nav>
