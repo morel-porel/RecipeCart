@@ -9,8 +9,15 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  
-  const userId = 1;
+
+  // Get logged-in user
+  const getUser = () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  };
+
+  const user = getUser();
+  const userId = user?.id || 1; // fallback to 1 if no user
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
@@ -33,7 +40,7 @@ const Cart = () => {
 
   const updateQuantity = async (cartItemId, newQuantity) => {
     if (newQuantity < 1) return;
-    
+
     try {
       const response = await axios.put(
         `${API_BASE_URL}/cart/${userId}/items/${cartItemId}`,
@@ -59,12 +66,12 @@ const Cart = () => {
   const calculateTotal = () => {
     if (!cart || !cart.items) return 0;
     return cart.items.reduce((total, item) => {
-      return total + (item.ingredient.price * item.quantity);
+      return total + item.ingredient.price * item.quantity;
     }, 0);
   };
 
   const handleProceedToPayment = () => {
-    if (!cart || cart.items.length === 0) {
+    if (!cart || !cart.items || cart.items.length === 0) {
       alert('Your cart is empty');
       return;
     }
@@ -85,20 +92,16 @@ const Cart = () => {
   return (
     <div className="page-container">
       <MainNavbar />
-      
+
       <div className="cart-page">
         <h1 className="page-title">Shopping Cart</h1>
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+        {error && <div className="error-message">{error}</div>}
 
-        {!cart || cart.items.length === 0 ? (
+        {!cart || !cart.items || cart.items.length === 0 ? (
           <div className="empty-cart">
             <p>Your cart is empty</p>
-            <button
+           <button
               onClick={() => navigate('/home')}
               className="primary-button"
             >
@@ -117,12 +120,13 @@ const Cart = () => {
               </div>
 
               {/* Cart Items */}
-              {cart.items.map((item) => (
+              {cart.items?.map((item) => (
                 <div key={item.id} className="cart-item">
                   <div className="item-info">
                     <div className="item-image">
                       <span>🥚</span>
                     </div>
+
                     <div className="item-details">
                       <p className="item-name">{item.ingredient.name}</p>
                       <p className="item-unit">{item.ingredient.unit}</p>
@@ -141,13 +145,16 @@ const Cart = () => {
                     >
                       -
                     </button>
+
                     <span className="quantity-value">{item.quantity}</span>
+
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="quantity-btn"
                     >
                       +
                     </button>
+
                     <button
                       onClick={() => removeItem(item.id)}
                       className="remove-btn"
@@ -172,7 +179,7 @@ const Cart = () => {
                   ₱{calculateTotal().toFixed(2)}
                 </span>
               </div>
-              
+
               <button
                 onClick={handleProceedToPayment}
                 className="checkout-button"

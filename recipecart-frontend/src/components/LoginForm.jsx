@@ -1,48 +1,103 @@
-
-
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import InputField from './InputField';
 import Button from './Button';
 import Logo from './Logo';
-import { Link, useNavigate } from 'react-router-dom'; // 1. Ensure useNavigate is imported
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   // ** API CALL **
-  //   console.log('Logging in with:', { email, password });
-  // };
-
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
-  
-    // --- THIS IS THE MOCK LOGIN LOGIC ---
-  console.log('Simulating successful login with:', { email, password });
+  const [emailOrUsername, setEmailOrUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // 3. Immediately redirect the user to the homepage
-  navigate('/home');   
+  const API_BASE_URL = 'http://localhost:8080/api';
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError(''); // Clear previous errors
+
+    // Basic validation
+    if (!emailOrUsername || !password) {
+      setError('Please enter both email/username and password');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Call login API
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        emailOrUsername: emailOrUsername,
+        password: password
+      });
+
+      const user = response.data;
+      console.log('Login successful:', user);
+
+      // Save user to localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Show success message
+      alert('Logged in successfully!');
+
+      // Navigate to home page
+      navigate('/home');
+
+    } catch (err) {
+      console.error('Login error:', err);
+      
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.response?.status === 401) {
+        setError('Invalid email/username or password');
+      } else if (err.response?.status === 404) {
+        setError('User not found');
+      } else {
+        setError('Login failed. Please try again');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <Logo isColorful={true} />
       <h1>Welcome Back</h1>
+      
+      {error && (
+        <div style={{
+          backgroundColor: '#fee2e2',
+          color: '#991b1b',
+          padding: '0.75rem',
+          borderRadius: '0.375rem',
+          marginBottom: '1rem',
+          fontSize: '0.875rem'
+        }}>
+          {error}
+        </div>
+      )}
+
       <InputField
-        type="email"
+        type="text"
         placeholder="Enter email or username"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={emailOrUsername}
+        onChange={(e) => setEmailOrUsername(e.target.value)}
+        required
       />
       <InputField
         type="password"
         placeholder="Enter password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
       <a href="#" className="forgot-password-link">Forgot Password</a>
-      <Button type="submit">Log In</Button>
+      <Button type="submit" disabled={loading}>
+        {loading ? 'Logging in...' : 'Log In'}
+      </Button>
       <p className="auth-switch-text">
         Don't have an account? <Link to="/register">Sign Up</Link>
       </p>

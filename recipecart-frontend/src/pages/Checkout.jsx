@@ -5,6 +5,12 @@ import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/Checkout.css';
 
 const Checkout = () => {
+  const navigate = useNavigate();
+
+  // NEW: get logged-in user from localStorage
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const userId = storedUser?.id || null;
+
   const [cart, setCart] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
@@ -15,12 +21,17 @@ const Checkout = () => {
     contactNumber: '',
     email: '',
   });
-  
-  const navigate = useNavigate();
-  const userId = 1;
+
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
+    // Redirect if not logged in
+    if (!userId) {
+      alert("You must be logged in to checkout");
+      navigate('/login');
+      return;
+    }
+
     fetchCart();
   }, []);
 
@@ -30,7 +41,7 @@ const Checkout = () => {
       setCart(response.data);
       setLoading(false);
     } catch (err) {
-      alert('Failed to load cart');
+      alert("Failed to load cart");
       navigate('/cart');
     }
   };
@@ -69,7 +80,7 @@ const Checkout = () => {
     if (!validateForm()) return;
 
     setProcessing(true);
-    
+
     try {
       const response = await axios.post(`${API_BASE_URL}/orders/checkout`, {
         userId: userId,
@@ -99,15 +110,17 @@ const Checkout = () => {
   return (
     <div className="page-container">
       <MainNavbar />
-      
+
+      {/* Everything below stays the same — unchanged */}
       <div className="checkout-page">
+
         <h1 className="page-title">
           Payment Details {paymentMethod === 'PAY_IN_STORE' ? '(Reserved)' : '(Online)'}
         </h1>
 
         <div className="payment-method-section">
           <h2 className="section-title">Choose your payment method:</h2>
-          
+
           <div className="radio-options">
             <label className="radio-option">
               <input
@@ -137,7 +150,7 @@ const Checkout = () => {
         {paymentMethod === 'PAY_IN_STORE' && (
           <div className="details-section">
             <h3 className="subsection-title">Reservation Details</h3>
-            
+
             <div className="form-group">
               <label>
                 Full Name <span className="required">*</span>
@@ -180,18 +193,18 @@ const Checkout = () => {
             <div className="pickup-info">
               <h4>Pickup Location</h4>
               <p>Something something location, Elsewhere Street</p>
-              
+
               <h4>Pickup Date and Time:</h4>
               <p>07/11/24 &nbsp;&nbsp; 9:00 AM - 10:00 PM</p>
             </div>
           </div>
         )}
 
-        {/* Online Payment Options */}
+        {/* Payment Options */}
         {paymentMethod === 'PAID_ONLINE' && (
           <div className="details-section">
             <h3 className="subsection-title">Select Payment Option</h3>
-            
+
             <div className="payment-options">
               <label className="payment-option">
                 <input
@@ -233,7 +246,7 @@ const Checkout = () => {
         {cart && (
           <div className="order-summary">
             <h3 className="subsection-title">Order Summary</h3>
-            
+
             <div className="summary-items">
               {cart.cart.items.map((item) => (
                 <div key={item.id} className="summary-item">
@@ -250,7 +263,6 @@ const Checkout = () => {
           </div>
         )}
 
-        {/* Action Buttons */}
         <div className="action-buttons">
           <button
             onClick={handleConfirmOrder}
@@ -267,6 +279,7 @@ const Checkout = () => {
             Back to Cart
           </button>
         </div>
+
       </div>
     </div>
   );

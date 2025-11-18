@@ -5,15 +5,22 @@ import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
 
 const OrderHistory = () => {
+  const navigate = useNavigate();
+
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const userId = storedUser?.id;
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  
-  const navigate = useNavigate();
-  const userId = 1;
+  const [expandedOrder, setExpandedOrder] = useState(null);
+
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
+    if (!userId) {
+      alert("You must be logged in to view orders.");
+      return navigate("/login");
+    }
     fetchOrders();
   }, []);
 
@@ -21,62 +28,34 @@ const OrderHistory = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/users/${userId}/orders`);
       setOrders(response.data);
-      setLoading(false);
     } catch (err) {
-      console.error('Error fetching orders:', err);
+      console.error("Failed to load orders:", err);
+    } finally {
       setLoading(false);
     }
   };
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'PROCESSING':
-        return 'status-processing';
-      case 'READY_FOR_PICKUP':
-        return 'status-ready';
-      case 'COMPLETED':
-        return 'status-completed';
-      case 'CANCELED':
-        return 'status-canceled';
-      default:
-        return 'status-default';
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const handleCancelOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to cancel this order?')) {
-      return;
-    }
+  const cancelOrder = async (orderId) => {
+    if (!window.confirm("Cancel this order?")) return;
 
     try {
-      await axios.put(`${API_BASE_URL}/orders/${orderId}/cancel`, {
-        userId: userId
-      });
-      alert('Order canceled successfully');
+      await axios.put(`${API_BASE_URL}/orders/${orderId}/cancel`, { userId });
+      alert("Order canceled.");
       fetchOrders();
     } catch (err) {
-      alert('Failed to cancel order: ' + (err.response?.data?.message || 'Unknown error'));
+      alert("Failed: " + (err.response?.data?.message || "Unknown error"));
     }
+  };
+
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleString("en-US");
   };
 
   if (loading) {
     return (
       <div className="page-container">
         <MainNavbar />
-        <div className="loading-container">
-          <p>Loading orders...</p>
-        </div>
+        <p>Loading order history...</p>
       </div>
     );
   }
@@ -84,85 +63,65 @@ const OrderHistory = () => {
   return (
     <div className="page-container">
       <MainNavbar />
-      
+
       <div className="orders-page">
         <h1 className="page-title">Order History</h1>
 
         {orders.length === 0 ? (
           <div className="empty-orders">
-            <p>No orders yet</p>
-            <button
-              onClick={() => navigate('/ingredients')}
-              className="primary-button"
-            >
+            <p>No orders found</p>
+            <button onClick={() => navigate("/home")} className="primary-button">
               Start Shopping
             </button>
           </div>
         ) : (
           <div className="orders-list">
-            {orders.map((order) => (
+            {orders.map(order => (
               <div key={order.id} className="order-card">
                 <div className="order-header">
-                  <div className="order-info">
-                    <h3>Order #{order.id}</h3>
-                    <p className="order-date">{formatDate(order.orderDate)}</p>
-                  </div>
-                  <div className="order-status-badge">
-                    <span className={`status-badge ${getStatusClass(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </div>
+                  <h3>Order #{order.id}</h3>
+                  <p>{formatDate(order.orderDate)}</p>
+                  <span className={`status-badge status-${order.status.toLowerCase()}`}>
+                    {order.status}
+                  </span>
                 </div>
 
                 <div className="order-body">
-                  <div className="order-items">
-                    {order.orderItems.slice(0, selectedOrder === order.id ? undefined : 3).map((item) => (
-                      <div key={item.id} className="order-item">
-                        <span className="item-description">
-                          {item.ingredient.name} x {item.quantity}
-                        </span>
-                        <span className="item-price">
-                          ₱{item.priceAtPurchase.toFixed(2)}
-                        </span>
-                      </div>
-                    ))}
-                    
-                    {order.orderItems.length > 3 && selectedOrder !== order.id && (
-                      <button
-                        onClick={() => setSelectedOrder(order.id)}
-                        className="show-more-btn"
-                      >
-                        + {order.orderItems.length - 3} more items
-                      </button>
-                    )}
-                    
-                    {selectedOrder === order.id && order.orderItems.length > 3 && (
-                      <button
-                        onClick={() => setSelectedOrder(null)}
-                        className="show-more-btn"
-                      >
-                        Show less
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="order-footer">
-                    <div className="order-total-info">
-                      <span className="total-label">Total: ₱{order.totalAmount.toFixed(2)}</span>
-                      <span className="payment-info">
-                        Payment: {order.paymentType === 'PAID_ONLINE' ? '💳 Online' : '🏪 In-Store'}
-                      </span>
+                  {(expandedOrder === order.id
+                    ? order.orderItems
+                    : order.orderItems.slice(0, 3)
+                  ).map(item => (
+                    <div key={item.id} className="order-item">
+                      <span>{item.ingredient.name} × {item.quantity}</span>
+                      <span>₱{item.priceAtPurchase.toFixed(2)}</span>
                     </div>
-                    
-                    {order.status === 'PROCESSING' && (
-                      <button
-                        onClick={() => handleCancelOrder(order.id)}
-                        className="cancel-order-btn"
-                      >
-                        Cancel Order
-                      </button>
-                    )}
-                  </div>
+                  ))}
+
+                  {order.orderItems.length > 3 && (
+                    <button
+                      className="show-more-btn"
+                      onClick={() =>
+                        setExpandedOrder(expandedOrder === order.id ? null : order.id)
+                      }
+                    >
+                      {expandedOrder === order.id
+                        ? "Show less"
+                        : `+ ${order.orderItems.length - 3} more`}
+                    </button>
+                  )}
+                </div>
+
+                <div className="order-footer">
+                  <strong>Total: ₱{order.totalAmount.toFixed(2)}</strong>
+
+                  {order.status === "PROCESSING" && (
+                    <button
+                      className="cancel-order-btn"
+                      onClick={() => cancelOrder(order.id)}
+                    >
+                      Cancel Order
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
