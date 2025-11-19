@@ -47,3 +47,5 @@ const CancelConfirmation = ({ onConfirm = () => {}, onClose = () => {} }) => {
 };
 
 export default CancelConfirmation;
+
+// Not integrated to website
