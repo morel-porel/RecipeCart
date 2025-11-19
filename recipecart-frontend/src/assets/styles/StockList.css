@@ -1,0 +1,151 @@
+/* Global (plain) CSS for the StockList page */
+
+/* Page wrapper */
+.stocks-page {
+  padding: 28px 40px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #222;
+  background: #fff;
+}
+
+/* Header */
+.stocks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+
+.stocks-header h1 {
+  color: #77b91b;
+  font-size: 32px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.stocks-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stocks-search input {
+  height: 38px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #d6d6d6;
+  min-width: 220px;
+  font-size: 14px;
+}
+
+/* small filter button icon */
+.filter-btn {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Divider line */
+.stocks-divider {
+  border: none;
+  border-top: 2px solid rgba(0,0,0,0.08);
+  margin: 18px 0 28px;
+}
+
+/* Grid layout */
+.stocks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px 48px;
+  align-items: start;
+}
+
+/* Card */
+.stock-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+}
+
+/* Image area */
+.stock-image-wrap {
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.stock-image-wrap.out {
+  opacity: 0.45;
+  filter: grayscale(60%);
+}
+
+.stock-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Info */
+.stock-info {
+  width: 100%;
+  max-width: 240px;
+}
+
+.stock-qty {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.stock-qty.oos {
+  color: #444;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.stock-name {
+  font-size: 15px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.stock-variant {
+  color: #777;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stocks-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stocks-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .stocks-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stocks-search input {
+    min-width: 100%;
+  }
+}
