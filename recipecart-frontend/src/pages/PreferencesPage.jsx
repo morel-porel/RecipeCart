@@ -2,15 +2,18 @@ import { useState } from 'react';
 import OnboardingLayout from '../components/OnboardingLayout';
 import PreferenceOption from '../components/PreferenceOption';
 import { allergyOptions, dietOptions, cuisineOptions } from '../data/preferenceData';
-import colorfulLogo from '../assets/images/logo.svg'; // Reuse your logo
+import colorfulLogo from '../assets/images/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext.jsx';
+import axios from 'axios'; // <-- ERROR #2 FIXED
 
 function PreferencesPage() {
   const [selectedAllergies, setSelectedAllergies] = useState(new Set());
   const [selectedDiets, setSelectedDiets] = useState(new Set());
   const [selectedCuisines, setSelectedCuisines] = useState(new Set());
 
-  const navigate = useNavigate();   // <-- ADD THIS
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   const handleToggle = (setter, state, value) => {
     const newSet = new Set(state);
@@ -18,21 +21,36 @@ function PreferencesPage() {
     setter(newSet);
   };
 
-  const handleSave = () => {
+  // ERROR #1 FIXED: Added 'async'
+  const handleSave = async () => { 
+    if (!user || !user.id) {
+      alert("No user is logged in. Redirecting to login.");
+      navigate('/login');
+      return;
+    }
+
+    // ERROR #3 FIXED: Corrected the keys to match the backend entity
     const preferences = {
       allergies: Array.from(selectedAllergies),
-      diets: Array.from(selectedDiets),
-      cuisines: Array.from(selectedCuisines),
+      dietaryPlan: selectedDiets.values().next().value || null, // Assuming one diet
+      favoriteCuisines: Array.from(selectedCuisines),
     };
 
-    console.log("Saving Preferences:", preferences);
+    try {
+      const response = await axios.put(`http://localhost:8080/api/users/${user.id}/profile`, preferences);
+      
+      console.log("Preferences saved:", response.data);
+      navigate('/home'); // Redirect only on success
 
-    navigate('/home');   // <-- REDIRECT AFTER SAVE
+    } catch (error) {
+      console.error('Failed to save preferences:', error.response?.data || error.message);
+      alert('Failed to save preferences.');
+    }
   };
 
   const handleSkip = (e) => {
     e.preventDefault();
-    navigate('/home');   // <-- REDIRECT AFTER SKIP
+    navigate('/home');
   };
 
   return (

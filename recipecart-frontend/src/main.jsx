@@ -14,6 +14,7 @@ import OrderHistory from './pages/OrderHistory.jsx';
 import './index.css';
 import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
+import { UserProvider } from './context/UserContext';
 
 // Define the application's routes
 const router = createBrowserRouter([
@@ -59,6 +60,8 @@ const router = createBrowserRouter([
 // Render the RouterProvider with the defined router
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );
