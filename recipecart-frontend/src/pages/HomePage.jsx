@@ -3,10 +3,12 @@ import MainNavbar from '../components/MainNavbar';
 import HeroSection from '../components/HeroSection';
 import FilterSidebar from '../components/FilterSidebar';
 import RecipeGrid from '../components/RecipeGrid';
+import { useUser } from '../context/UserContext';
 import '../assets/styles/HomePage.css';
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]);
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   // State for the text in the search bar
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +18,7 @@ function HomePage() {
     dietaryTags: null,
     excludeAllergen: null,
   });
+  const { user } = useUser();
   // This effect re-runs whenever the activeFilters state changes
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -43,6 +46,25 @@ function HomePage() {
 
     fetchRecipes();
   }, [activeFilters, searchTerm]); // The dependency array ensures this runs when filters or search change
+
+  useEffect(() => {
+    // Only fetch recommendations if a user is logged in
+    if (user && user.id) {
+      const fetchRecommendations = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/api/users/${user.id}/recommendations`);
+          if (!response.ok) throw new Error('Could not fetch recommendations');
+          const data = await response.json();
+          setRecommendedRecipes(data);
+        } catch (error) {
+          console.error("Failed to fetch recommendations:", error);
+        }
+      };
+
+      fetchRecommendations();
+    }
+  }, [user]);
+
   // Handler function to be passed to the sidebar
   const handleFilterChange = (filterKey, value) => {
     setSearchTerm(''); // Clear the search term when a filter is changed
@@ -67,23 +89,32 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <MainNavbar 
-        onSearch={handleSearch}
-        initialSearchTerm={searchTerm}
-      />
+      <MainNavbar onSearch={handleSearch} />
       <HeroSection />
       <main className="main-content-area">
-        <FilterSidebar
+        <FilterSidebar 
           activeFilters={activeFilters}
-          onFilterChange={handleFilterChange}
+          onFilterChange={handleFilterChange} 
         />
         <div className="recipes-area">
-          <h2>Recipes</h2>
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <RecipeGrid recipes={recipes} />
+          
+          {/* --- NEW RECOMMENDATIONS SECTION --- */}
+          {recommendedRecipes.length > 0 && (
+            <section className="recipe-category">
+              <h2>Recommended for You</h2>
+              <RecipeGrid recipes={recommendedRecipes} />
+            </section>
           )}
+
+          {/* Existing general recipes section */}
+          <section className="recipe-category">
+            <h2>{searchTerm ? `Search Results for "${searchTerm}"` : "Explore Recipes"}</h2>
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              <RecipeGrid recipes={recipes} />
+            )}
+          </section>
         </div>
       </main>
     </div>
