@@ -14,7 +14,7 @@ import OrderHistory from './pages/OrderHistory.jsx';
 import './index.css';
 import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
-import { UserProvider } from './context/UserContext';
+import { UserProvider } from './context/UserContext.jsx';
 
 // Define the application's routes
 const router = createBrowserRouter([
