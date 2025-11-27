@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
+import { useUser } from '../context/UserContext';
 import '../assets/styles/RecipeDetail.css';
 
 // A component for the Nutrition Fact bars
@@ -22,14 +23,21 @@ const NutritionBar = ({ label, displayValue, numericValue, max }) => {
 function RecipeDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
 
   const [nutritionData, setNutritionData] = useState(null);
 
-  // Replace with actual user ID from your auth system
-  const userId = 1;
+  // Get logged-in user ID from context
+  const getUser = () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  };
+
+  const currentUser = getUser();
+  const userId = currentUser?.id || 1; // fallback to 1 if no user
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
