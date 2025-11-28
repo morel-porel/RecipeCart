@@ -31,10 +31,14 @@ function RecipeDetailPage() {
   const [nutritionData, setNutritionData] = useState(null);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Get logged-in user ID from localStorage
 =======
   // Get logged-in user ID from context
 >>>>>>> 0a14cde (Merge remote changes into main)
+=======
+  // Get logged-in user ID from localStorage
+>>>>>>> feature/cashier
   const getUser = () => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
@@ -42,10 +46,14 @@ function RecipeDetailPage() {
 
   const currentUser = getUser();
 <<<<<<< HEAD
+<<<<<<< HEAD
   const userId = currentUser?.id || 1;
 =======
   const userId = currentUser?.id || 1; // fallback to 1 if no user
 >>>>>>> 0a14cde (Merge remote changes into main)
+=======
+  const userId = currentUser?.id || 1;
+>>>>>>> feature/cashier
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
