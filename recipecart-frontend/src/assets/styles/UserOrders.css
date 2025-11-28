@@ -1,0 +1,79 @@
+/* Ensure navbar is fixed */
+.main-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Push page content below navbar */
+.user-orders-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 1rem 2rem 1rem; /* top padding = navbar height + spacing */
+}
+
+
+
+/* Orders Table */
+.orders-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.orders-header,
+.order-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  align-items: center;
+}
+
+.orders-header {
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-item {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.order-item:hover {
+  background-color: #f9fafb;
+}
+
+/* Status colors */
+.order-status.completed {
+  color: green;
+}
+
+.order-status.pending {
+  color: orange;
+}
+
+/* Actions buttons */
+.order-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.primary-button.cancel {
+  background-color: #f87171;
+}
+
+/* Empty orders */
+.empty-orders {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 3rem;
+  text-align: center;
+  font-size: 1.25rem;
+  color: #6b7280;
+}
