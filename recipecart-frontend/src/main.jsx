@@ -15,6 +15,10 @@ import './index.css';
 import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 
+import CashierPage from './pages/CashierPage.jsx';
+import UserOrders from './pages/UserOrders.jsx';
+
+
 // Define the application's routes
 const router = createBrowserRouter([
   {
@@ -50,8 +54,17 @@ const router = createBrowserRouter([
         path: 'orders',
         element: <OrderHistory />,
       },
-      { path: 'home', element: <HomePage /> },
+
+      { path: 'home', element: <HomePage />},
       { path: 'recipes/:id', element: <RecipeDetailPage /> },
+
+      { path: 'cashier', element: <CashierPage /> },
+
+      {
+        path: 'user-orders',   // URL: /user-orders
+        element: <UserOrders />,
+      }
+
     ],
   },
 ]);
