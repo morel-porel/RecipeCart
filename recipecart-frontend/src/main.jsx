@@ -20,10 +20,6 @@ import CashierPage from './pages/CashierPage.jsx';
 import UserOrders from './pages/UserOrders.jsx';
 
 
-import CashierPage from './pages/CashierPage.jsx';
-import UserOrders from './pages/UserOrders.jsx';
-
-
 // Define the application's routes
 const router = createBrowserRouter([
   {
