@@ -22,14 +22,21 @@ const NutritionBar = ({ label, displayValue, numericValue, max }) => {
 function RecipeDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
 
   const [nutritionData, setNutritionData] = useState(null);
 
-  // Replace with actual user ID from your auth system
-  const userId = 1;
+  // Get logged-in user ID from localStorage
+  const getUser = () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  };
+
+  const currentUser = getUser();
+  const userId = currentUser?.id || 1;
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
@@ -71,7 +78,8 @@ function RecipeDetailPage() {
         try {
           await axios.post(`${API_BASE_URL}/cart/${userId}/items`, {
             ingredientId: item.ingredient.id,
-            quantity: Math.ceil(item.quantity) // Round up to nearest whole number
+            quantity: Math.ceil(item.quantity), // Round up to nearest whole number
+            recipeSource: recipe.name // Add recipe name to track source
           });
         } catch (error) {
           // If ingredient already in cart, it will update quantity
