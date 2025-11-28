@@ -3,13 +3,15 @@
   background-color: #f9fafb;
   display: flex;
   justify-content: center; /* horizontal center */
-  padding: 1rem 0;
+  padding: 4rem 0 1rem 0; /* increased top padding to pull content down */
 }
 
 .content-wrapper {
   width: 100%;
-  max-width: 1200px; /* keeps the table from stretching too wide */
+  max-width: 1200px;
+  padding-top: 1rem; /* extra spacing inside wrapper */
 }
+
 
 .new-orders-title-wrapper {
   display: flex;
@@ -44,7 +46,7 @@
 
 .cashier-search-bar button {
   border: none;
-  background-color: #16a34a;
+  background-color: white;
   color: white;
   padding: 0.5rem 1rem;
   cursor: pointer;
