@@ -53,18 +53,19 @@ public class ShoppingCartService {
      * Add item to cart or update quantity if already exists
      */
     @Transactional
-    public ShoppingCart addItemToCart(Long userId, Long ingredientId, Integer quantity) {
+    public ShoppingCart addItemToCart(Long userId, Long ingredientId, Integer quantity, String recipeSource) {
         ShoppingCart cart = getOrCreateCart(userId);
         
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found with id: " + ingredientId));
 
-        // Check if item already exists in cart
+        // Check if item already exists in cart from the SAME recipe source
         CartItem existingItem = cartItemRepository.findByCartIdAndIngredientId(cart.getId(), ingredientId)
                 .orElse(null);
 
-        if (existingItem != null) {
-            // Update quantity
+        if (existingItem != null && 
+            (existingItem.getRecipeSource() == null || existingItem.getRecipeSource().equals(recipeSource))) {
+            // Update quantity if from same source or no source specified
             int newQuantity = existingItem.getQuantity() + quantity;
             
             // Check stock availability
@@ -86,13 +87,21 @@ public class ShoppingCartService {
                 );
             }
             
-            // Create new cart item
-            CartItem newItem = new CartItem(cart, ingredient, quantity);
+            // Create new cart item with recipe source
+            CartItem newItem = new CartItem(cart, ingredient, quantity, recipeSource);
             cart.addItem(newItem);
             cartItemRepository.save(newItem);
         }
 
         return cartRepository.save(cart);
+    }
+
+    /**
+     * Add item to cart without recipe source (backward compatibility)
+     */
+    @Transactional
+    public ShoppingCart addItemToCart(Long userId, Long ingredientId, Integer quantity) {
+        return addItemToCart(userId, ingredientId, quantity, null);
     }
 
     /**

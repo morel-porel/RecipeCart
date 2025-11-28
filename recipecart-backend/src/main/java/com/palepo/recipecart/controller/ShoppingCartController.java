@@ -32,7 +32,7 @@ public class ShoppingCartController {
     /**
      * Add item to cart
      * POST /api/cart/{userId}/items
-     * Body: { "ingredientId": 1, "quantity": 2 }
+     * Body: { "ingredientId": 1, "quantity": 2, "recipeSource": "Spaghetti Carbonara" }
      */
     @PostMapping("/{userId}/items")
     public ResponseEntity<ShoppingCart> addItemToCart(
@@ -41,8 +41,10 @@ public class ShoppingCartController {
         
         Long ingredientId = Long.valueOf(request.get("ingredientId").toString());
         Integer quantity = Integer.valueOf(request.get("quantity").toString());
+        String recipeSource = request.containsKey("recipeSource") ? 
+                              request.get("recipeSource").toString() : null;
         
-        ShoppingCart cart = cartService.addItemToCart(userId, ingredientId, quantity);
+        ShoppingCart cart = cartService.addItemToCart(userId, ingredientId, quantity, recipeSource);
         return ResponseEntity.ok(cart);
     }
 

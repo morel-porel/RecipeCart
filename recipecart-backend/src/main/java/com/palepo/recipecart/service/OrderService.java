@@ -205,18 +205,45 @@ public class OrderService {
     }
 
     /**
-     * Get order history for a user
+     * Get order history for a user - FIX: Explicitly fetch all lazy relationships
      */
+    @Transactional
     public List<Order> getOrderHistory(Long userId) {
-        return orderRepository.findByUserId(userId);
+        List<Order> orders = orderRepository.findByUserId(userId);
+        
+        // Force initialization of lazy-loaded relationships
+        for (Order order : orders) {
+            // Initialize orderItems collection
+            if (order.getOrderItems() != null) {
+                order.getOrderItems().size();
+                
+                // Initialize ingredient for each order item
+                for (OrderItem item : order.getOrderItems()) {
+                    if (item.getIngredient() != null) {
+                        item.getIngredient().getName(); // Touch the ingredient to load it
+                    }
+                }
+            }
+        }
+        
+        return orders;
     }
 
     /**
-     * Get a specific order by ID
+     * Get a specific order by ID - FIX: Explicitly fetch all lazy relationships
      */
+    @Transactional
     public Order getOrderById(Long orderId) {
-        return orderRepository.findById(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + orderId));
+        
+        // Force initialization of lazy-loaded relationships
+        order.getOrderItems().size();
+        for (OrderItem item : order.getOrderItems()) {
+            item.getIngredient().getName();
+        }
+        
+        return order;
     }
 
     /**
