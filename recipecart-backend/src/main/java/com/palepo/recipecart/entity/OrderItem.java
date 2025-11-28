@@ -16,7 +16,8 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // CHANGED: FetchType.LAZY to FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
