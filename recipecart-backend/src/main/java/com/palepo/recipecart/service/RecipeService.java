@@ -1,9 +1,6 @@
 package com.palepo.recipecart.service;
 
-import com.palepo.recipecart.entity.Ingredient;
-import com.palepo.recipecart.entity.Recipe;
-import com.palepo.recipecart.entity.User;
-import com.palepo.recipecart.entity.UserProfile;
+import com.palepo.recipecart.entity.*;
 import com.palepo.recipecart.repository.RecipeRepository;
 import com.palepo.recipecart.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +21,11 @@ public class RecipeService {
         this.userRepository = userRepository;
     }
     public Recipe createRecipe(Recipe recipe){
+        if (recipe.getRecipeIngredients() != null) {
+            for (RecipeIngredient ri : recipe.getRecipeIngredients()) {
+                ri.setRecipe(recipe);
+            }
+        }
         return recipeRepository.save(recipe);
     }
     public List<Recipe> getAllRecipes(){

@@ -4,6 +4,7 @@ import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import { useUser } from '../context/UserContext';
 import '../assets/styles/RecipeDetail.css';
+import { allergyOptions } from '../data/preferenceData';
 
 // A component for the Nutrition Fact bars
 const NutritionBar = ({ label, displayValue, numericValue, max }) => {
@@ -29,7 +30,7 @@ function RecipeDetailPage() {
   const [addingToCart, setAddingToCart] = useState(false);
   
   const [nutritionData, setNutritionData] = useState(null);
-
+  const [userAllergies, setUserAllergies] = useState([]);
 
   const getUser = () => {
     const userStr = localStorage.getItem('user');
@@ -39,6 +40,17 @@ function RecipeDetailPage() {
   const currentUser = getUser();
     const userId = currentUser?.id || 1;
   const API_BASE_URL = 'http://localhost:8080/api';
+
+  useEffect(() => {
+    if (user && user.id) {
+        axios.get(`${API_BASE_URL}/users/${user.id}/profile`)
+            .then(res => {
+                // Assuming the backend returns an object with an 'allergies' array
+                setUserAllergies(res.data.allergies || []);
+            })
+            .catch(err => console.error("Error fetching user profile:", err));
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -163,8 +175,33 @@ function RecipeDetailPage() {
           <section className="recipe-title-section">
             <h1>{recipe.name}</h1>
             <div className="recipe-tags">
-              {recipe.dietaryTags?.map(tag => <span key={tag} className="recipe-tag">{tag}</span>)}
-              {recipe.allergenInfo?.map(allergen => <span key={allergen} className="recipe-tag">{allergen.replace(/_/g, ' ')}-Free</span>)}
+              {recipe.dietaryTags?.map(tag => (
+                <span key={tag} className="recipe-tag">{tag}</span>
+              ))}
+              {allergyOptions
+                .filter(option => !recipe.allergenInfo?.includes(option.value))
+                .map(option => (
+                  <span key={option.value} className="recipe-tag">
+                    {option.label}
+                  </span>
+                ))
+              }
+              {recipe.allergenInfo?.map(allergen => {
+                // Logic: Check if the logged-in user is allergic to THIS specific ingredient
+                // We assume user.userProfile.allergies stores strings like "GLUTEN", "NUT", etc.
+                // Adjust path to 'user.userProfile.allergies' based on your exact object structure
+                const isUserAllergic = user?.userProfile?.allergies?.includes(allergen) || 
+                                      user?.allergies?.includes(allergen); // Fallback check
+
+                return (
+                  <span 
+                    key={allergen} 
+                    className={`recipe-tag ${isUserAllergic ? 'danger' : 'warning'}`}
+                  >
+                    {isUserAllergic ? '⚠️ ' : ''} Contains: {allergen}
+                  </span>
+                );
+              })}
             </div>
           </section>
 
