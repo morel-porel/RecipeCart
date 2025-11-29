@@ -1,5 +1,6 @@
 package com.palepo.recipecart.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ public class UserProfile {
     @OneToOne
     @MapsId // This links this entity's ID to the User's ID
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ElementCollection
