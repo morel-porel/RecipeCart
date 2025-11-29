@@ -71,7 +71,7 @@ function PreferencesPage() {
             {allergyOptions.map(option => (
               <PreferenceOption
                 key={option.value}
-                label={option.label}
+                label={option.label.replace('-free', '')}
                 isSelected={selectedAllergies.has(option.value)}
                 onClick={() => handleToggle(setSelectedAllergies, selectedAllergies, option.value)}
               />
