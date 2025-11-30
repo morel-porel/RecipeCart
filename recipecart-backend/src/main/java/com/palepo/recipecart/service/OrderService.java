@@ -82,6 +82,8 @@ public class OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(requestedQuantity);
             orderItem.setPriceAtPurchase(itemTotal);
+            // Preserve recipe source from cart item if available
+            orderItem.setRecipeSource(cartItem.getRecipeSource());
             orderItem.setIngredient(ingredient);
             orderItems.add(orderItem);
 
