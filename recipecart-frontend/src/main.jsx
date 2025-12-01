@@ -18,6 +18,7 @@ import { UserProvider } from './context/UserContext.jsx';
 
 import CashierPage from './pages/CashierPage.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
+import OrderPage from './pages/OrderPage.jsx';
 
 // Define the application's routes
 const router = createBrowserRouter([
@@ -61,8 +62,8 @@ const router = createBrowserRouter([
       { path: 'cashier', element: <CashierPage /> },
 
       {
-        path: 'user-orders',   // URL: /user-orders
-        element: <UserOrders />,
+        path: 'order-summary',   // URL: /user-orders
+        element: <OrderPage />,
       },
       {
         path: 'add-recipe',
