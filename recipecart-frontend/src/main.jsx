@@ -17,7 +17,6 @@ import RecipeDetailPage from './pages/RecipeDetailPage';
 import { UserProvider } from './context/UserContext.jsx';
 
 import CashierPage from './pages/CashierPage.jsx';
-import UserOrders from './pages/UserOrders.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
 
 // Define the application's routes
