@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/CashierPage.css';
 import EggImg from '../assets/images/egg.png';
@@ -34,6 +35,7 @@ export default function CashierPage() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     setOrders(defaultOrders);
@@ -77,9 +79,18 @@ export default function CashierPage() {
             <div className="success-message">{successMessage}</div>
           )}
 
-          {/* Title + Search */}
+          {/* Title + Actions + Search */}
           <div className="new-orders-title-wrapper">
-            <span className="new-orders-title">New Orders</span>
+            <div className="title-section">
+
+              <span className="new-orders-title">New Orders</span>
+              <button 
+                className="add-recipe-nav-btn"
+                onClick={() => navigate('/add-recipe')}
+              >
+                + Add New Recipe
+              </button>
+            </div>
             <form
               className="cashier-search-bar"
               onSubmit={(e) => e.preventDefault()}

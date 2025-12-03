@@ -17,22 +17,51 @@
   display: flex;
   justify-content: space-between; /* New Orders left, Search right */
   align-items: center;
-  margin-top: 1rem;    /* space from navbar */
-  margin-bottom: 2rem; /* space above table */
-  padding: 0 1rem;     /* optional horizontal padding */
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* Allows wrapping on mobile */
+  gap: 15px;
 }
-
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 .new-orders-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: #16a34a; /* same green as navbar/logo */
 }
+.add-recipe-nav-btn {
+  background-color: #4CAF50; /* RecipeCart Green */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
+.add-recipe-nav-btn:hover {
+  background-color: #45a049; /* Slightly darker green */
+  transform: translateY(-1px);
+}
+
+.add-recipe-nav-btn:active {
+  transform: translateY(0);
+}
 .cashier-search-bar {
   display: flex;
   align-items: center;
+  background: white;
   border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
+  border-radius: 8px;
+  padding: 5px 10px;
   overflow: hidden;
 }
 
