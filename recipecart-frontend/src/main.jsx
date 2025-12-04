@@ -19,6 +19,7 @@ import { UserProvider } from './context/UserContext.jsx';
 import CashierPage from './pages/CashierPage.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
 import OrderPage from './pages/OrderPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 
 // Define the application's routes
 const router = createBrowserRouter([
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: 'add-recipe',
         element: <AddRecipePage />,
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage />,
       },
 
     ],
