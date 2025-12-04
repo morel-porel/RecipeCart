@@ -8,7 +8,7 @@ const Cart = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [groupedView, setGroupedView] = useState(true); // Toggle between grouped/flat view
+  const [groupedView, setGroupedView] = useState(true);
   const navigate = useNavigate();
 
   const getUser = () => {
@@ -78,7 +78,6 @@ const Cart = () => {
     navigate('/checkout');
   };
 
-  // Group cart items by recipe
   const groupItemsByRecipe = () => {
     if (!cart || !cart.items) return {};
 
@@ -100,7 +99,7 @@ const Cart = () => {
 
   if (loading) {
     return (
-      <div className="page-container">
+      <div className="cart-page-wrapper">
         <MainNavbar />
         <div className="loading-container">
           <p>Loading cart...</p>
@@ -110,7 +109,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="page-container">
+    <div className="cart-page-wrapper">
       <MainNavbar />
 
       <div className="cart-page">
@@ -138,7 +137,6 @@ const Cart = () => {
           </div>
         ) : (
           <>
-            {/* Grouped View */}
             {groupedView ? (
               <div className="cart-grouped-container">
                 {Object.entries(groupedItems).map(([recipeName, items]) => (
@@ -208,7 +206,6 @@ const Cart = () => {
                 ))}
               </div>
             ) : (
-              /* Flat View */
               <div className="cart-container">
                 <div className="cart-header">
                   <div className="header-item">Shopping Cart</div>
@@ -268,7 +265,6 @@ const Cart = () => {
               </div>
             )}
 
-            {/* Cart Summary */}
             <div className="cart-summary">
               <div className="summary-row">
                 <span className="summary-label">Total:</span>

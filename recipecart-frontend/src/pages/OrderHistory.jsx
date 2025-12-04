@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
-import '../assets/styles/Cart.css';
 
 const OrderHistory = () => {
   const navigate = useNavigate();
@@ -13,11 +12,9 @@ const OrderHistory = () => {
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedOrder, setExpandedOrder] = useState(null);
 
   const API_BASE_URL = 'http://localhost:8080/api';
 
-  // Helper to group order items by recipeSource
   const groupItemsByRecipe = (items) => {
     if (!items) return {};
     const grouped = {};
@@ -66,15 +63,17 @@ const OrderHistory = () => {
 
   if (loading) {
     return (
-      <div className="page-container">
+      <div className="orders-page-wrapper">
         <MainNavbar />
-        <p>Loading order history...</p>
+        <div className="loading-container">
+          <p>Loading order history...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="page-container">
+    <div className="orders-page-wrapper">
       <MainNavbar />
 
       <div className="orders-page">
@@ -92,15 +91,16 @@ const OrderHistory = () => {
             {orders.map(order => (
               <div key={order.id} className="order-card">
                 <div className="order-header">
-                  <h3>Order #{order.id}</h3>
-                  <p>{formatDate(order.orderDate)}</p>
+                  <div>
+                    <h3>Order #{order.id}</h3>
+                    <p>{formatDate(order.orderDate)}</p>
+                  </div>
                   <span className={`status-badge status-${order.status.toLowerCase()}`}>
                     {order.status}
                   </span>
                 </div>
 
                 <div className="order-body">
-                  {/* Group items by recipe like cart */}
                   {Object.entries(groupItemsByRecipe(order.orderItems)).map(([recipeName, items]) => (
                     <div key={recipeName} className="recipe-group">
                       <div className="recipe-group-header">
@@ -162,4 +162,3 @@ const OrderHistory = () => {
 };
 
 export default OrderHistory;
-

@@ -7,7 +7,6 @@ import '../assets/styles/Checkout.css';
 const Checkout = () => {
   const navigate = useNavigate();
 
-  // NEW: get logged-in user from localStorage
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.id || null;
 
@@ -25,7 +24,6 @@ const Checkout = () => {
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
-    // Redirect if not logged in
     if (!userId) {
       alert("You must be logged in to checkout");
       navigate('/login');
@@ -98,7 +96,7 @@ const Checkout = () => {
 
   if (loading) {
     return (
-      <div className="page-container">
+      <div className="checkout-page-wrapper">
         <MainNavbar />
         <div className="loading-container">
           <p>Loading...</p>
@@ -108,12 +106,10 @@ const Checkout = () => {
   }
 
   return (
-    <div className="page-container">
+    <div className="checkout-page-wrapper">
       <MainNavbar />
 
-      {/* Everything below stays the same — unchanged */}
       <div className="checkout-page">
-
         <h1 className="page-title">
           Payment Details {paymentMethod === 'PAY_IN_STORE' ? '(Reserved)' : '(Online)'}
         </h1>
@@ -146,7 +142,6 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* Reservation Details */}
         {paymentMethod === 'PAY_IN_STORE' && (
           <div className="details-section">
             <h3 className="subsection-title">Reservation Details</h3>
@@ -200,7 +195,6 @@ const Checkout = () => {
           </div>
         )}
 
-        {/* Payment Options */}
         {paymentMethod === 'PAID_ONLINE' && (
           <div className="details-section">
             <h3 className="subsection-title">Select Payment Option</h3>
@@ -242,7 +236,6 @@ const Checkout = () => {
           </div>
         )}
 
-        {/* Order Summary */}
         {cart && (
           <div className="order-summary">
             <h3 className="subsection-title">Order Summary</h3>
@@ -279,7 +272,6 @@ const Checkout = () => {
             Back to Cart
           </button>
         </div>
-
       </div>
     </div>
   );
