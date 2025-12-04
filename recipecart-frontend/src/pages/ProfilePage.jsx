@@ -30,7 +30,7 @@ const ProfilePage = () => {
     }
     
     fetchUserData(storedUser.id);
-  }, []);
+  }, [navigate]);
 
   const fetchUserData = async (userId) => {
     try {
@@ -45,12 +45,12 @@ const ProfilePage = () => {
         email: userResponse.data.email,
       });
 
-      // Fetch user profile/preferences (this might fail if no profile exists yet)
+      // Fetch user profile/preferences
       try {
         const profileResponse = await axios.get(`${API_BASE_URL}/users/${userId}/profile`);
         setUserProfile(profileResponse.data);
       } catch (err) {
-        console.log('No user profile found yet');
+        console.log('No user profile found yet, will create on first save');
         setUserProfile(null);
       }
       
