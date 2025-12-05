@@ -72,6 +72,10 @@ const router = createBrowserRouter([
         element: <UserOrders />,
       },
       {
+        path: 'order-summary',
+        element: <OrderHistory />,
+      },
+      {
         path: 'add-recipe',
         element: <AddRecipePage />,
       },
