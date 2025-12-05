@@ -17,9 +17,10 @@ import RecipeDetailPage from './pages/RecipeDetailPage';
 import { UserProvider } from './context/UserContext.jsx';
 
 import CashierPage from './pages/CashierPage.jsx';
-import UserOrders from './pages/UserOrders.jsx';
+// import UserOrders from './pages/UserOrders.jsx';
 import OrderDetails from './pages/OrderDetails.jsx';
-
+import AddRecipePage from './pages/AddRecipePage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 
 // Define the application's routes
 const router = createBrowserRouter([
@@ -67,10 +68,10 @@ const router = createBrowserRouter([
         element: <OrderDetails />,
       },
 
-      {
-        path: 'user-orders',   // URL: /user-orders
-        element: <UserOrders />,
-      },
+      // {
+      //   path: 'user-orders',   // URL: /user-orders
+      //   element: <UserOrders />,
+      // },
       
       {
         path: 'order-summary',

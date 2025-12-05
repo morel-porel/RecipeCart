@@ -86,8 +86,6 @@ const OrderHistory = () => {
           </button>
           <h1 className="page-title">Order History</h1>
         </div>
-
-
         {orders.length === 0 ? (
           <div className="empty-orders">
             <p>No orders found</p>
