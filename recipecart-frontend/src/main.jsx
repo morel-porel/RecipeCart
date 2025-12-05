@@ -70,9 +70,6 @@ const router = createBrowserRouter([
       {
         path: 'user-orders',   // URL: /user-orders
         element: <UserOrders />,
-      }
-        path: 'order-summary',   // URL: /user-orders
-        element: <OrderPage />,
       },
       {
         path: 'add-recipe',
