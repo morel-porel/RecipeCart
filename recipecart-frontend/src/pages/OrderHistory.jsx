@@ -12,9 +12,19 @@ const OrderHistory = () => {
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedOrder, setExpandedOrder] = useState(null);
 
   const API_BASE_URL = 'http://localhost:8080/api';
+
+  const groupItemsByRecipe = (items) => {
+    if (!items) return {};
+    const grouped = {};
+    items.forEach(item => {
+      const recipeSource = item.recipeSource || 'Individual Items';
+      if (!grouped[recipeSource]) grouped[recipeSource] = [];
+      grouped[recipeSource].push(item);
+    });
+    return grouped;
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -53,15 +63,17 @@ const OrderHistory = () => {
 
   if (loading) {
     return (
-      <div className="page-container">
+      <div className="orders-page-wrapper">
         <MainNavbar />
-        <p>Loading order history...</p>
+        <div className="loading-container">
+          <p>Loading order history...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="page-container">
+    <div className="orders-page-wrapper">
       <MainNavbar />
 
       <div className="orders-page">
@@ -79,36 +91,53 @@ const OrderHistory = () => {
             {orders.map(order => (
               <div key={order.id} className="order-card">
                 <div className="order-header">
-                  <h3>Order #{order.id}</h3>
-                  <p>{formatDate(order.orderDate)}</p>
+                  <div>
+                    <h3>Order #{order.id}</h3>
+                    <p>{formatDate(order.orderDate)}</p>
+                  </div>
                   <span className={`status-badge status-${order.status.toLowerCase()}`}>
                     {order.status}
                   </span>
                 </div>
 
                 <div className="order-body">
-                  {(expandedOrder === order.id
-                    ? order.orderItems
-                    : order.orderItems.slice(0, 3)
-                  ).map(item => (
-                    <div key={item.id} className="order-item">
-                      <span>{item.ingredient.name} × {item.quantity}</span>
-                      <span>₱{item.priceAtPurchase.toFixed(2)}</span>
+                  {Object.entries(groupItemsByRecipe(order.orderItems)).map(([recipeName, items]) => (
+                    <div key={recipeName} className="recipe-group">
+                      <div className="recipe-group-header">
+                        <h3>{recipeName === 'Individual Items' ? '🛒 Individual Items' : `🍳 ${recipeName}`}</h3>
+                        <span className="item-count">{items.length} item{items.length > 1 ? 's' : ''}</span>
+                      </div>
+
+                      <div className="cart-container">
+                        <div className="cart-header">
+                          <div className="header-item">Item</div>
+                          <div className="header-price">Price</div>
+                          <div className="header-quantity">Quantity</div>
+                          <div className="header-total">Total</div>
+                        </div>
+
+                        {items.map(item => (
+                          <div key={item.id} className="cart-item">
+                            <div className="item-info">
+                              <div className="item-image">🥚</div>
+                              <div className="item-details">
+                                <p className="item-name">{item.ingredient.name}</p>
+                                <p className="item-unit">{item.ingredient.unit}</p>
+                              </div>
+                            </div>
+
+                            <div className="item-price">₱{(item.priceAtPurchase / item.quantity).toFixed(2)}</div>
+
+                            <div className="item-quantity">
+                              <span className="quantity-value">{item.quantity}</span>
+                            </div>
+
+                            <div className="item-total">₱{item.priceAtPurchase.toFixed(2)}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
-
-                  {order.orderItems.length > 3 && (
-                    <button
-                      className="show-more-btn"
-                      onClick={() =>
-                        setExpandedOrder(expandedOrder === order.id ? null : order.id)
-                      }
-                    >
-                      {expandedOrder === order.id
-                        ? "Show less"
-                        : `+ ${order.orderItems.length - 3} more`}
-                    </button>
-                  )}
                 </div>
 
                 <div className="order-footer">
@@ -133,4 +162,3 @@ const OrderHistory = () => {
 };
 
 export default OrderHistory;
-

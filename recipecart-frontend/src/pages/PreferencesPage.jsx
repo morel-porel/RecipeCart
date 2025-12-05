@@ -1,38 +1,117 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import OnboardingLayout from '../components/OnboardingLayout';
 import PreferenceOption from '../components/PreferenceOption';
 import { allergyOptions, dietOptions, cuisineOptions } from '../data/preferenceData';
-import colorfulLogo from '../assets/images/logo.svg'; // Reuse your logo
+import colorfulLogo from '../assets/images/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext.jsx';
+import axios from 'axios';
 
 function PreferencesPage() {
   const [selectedAllergies, setSelectedAllergies] = useState(new Set());
-  const [selectedDiets, setSelectedDiets] = useState(new Set());
+  const [selectedDiet, setSelectedDiet] = useState(''); // Changed to single value
   const [selectedCuisines, setSelectedCuisines] = useState(new Set());
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();   // <-- ADD THIS
+  const navigate = useNavigate();
+  const { user } = useUser();
 
-  const handleToggle = (setter, state, value) => {
-    const newSet = new Set(state);
-    newSet.has(value) ? newSet.delete(value) : newSet.add(value);
-    setter(newSet);
-  };
-
-  const handleSave = () => {
-    const preferences = {
-      allergies: Array.from(selectedAllergies),
-      diets: Array.from(selectedDiets),
-      cuisines: Array.from(selectedCuisines),
+  // Load existing preferences if editing
+  useEffect(() => {
+    const loadExistingPreferences = async () => {
+      const storedUser = user || JSON.parse(localStorage.getItem('user'));
+      if (storedUser && storedUser.id) {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/users/${storedUser.id}/profile`);
+          const profile = response.data;
+          
+          if (profile.allergies) {
+            setSelectedAllergies(new Set(profile.allergies));
+          }
+          if (profile.dietaryPlan) {
+            setSelectedDiet(profile.dietaryPlan);
+          }
+          if (profile.favoriteCuisines) {
+            setSelectedCuisines(new Set(profile.favoriteCuisines));
+          }
+        } catch (error) {
+          console.log('No existing preferences found, starting fresh');
+        }
+      }
     };
 
-    console.log("Saving Preferences:", preferences);
+    loadExistingPreferences();
+  }, [user]);
 
-    navigate('/home');   // <-- REDIRECT AFTER SAVE
+  const handleAllergyToggle = (value) => {
+    const newSet = new Set(selectedAllergies);
+    if (newSet.has(value)) {
+      newSet.delete(value);
+    } else {
+      newSet.add(value);
+    }
+    setSelectedAllergies(newSet);
+  };
+
+  const handleDietToggle = (value) => {
+    // Only allow one diet selection
+    if (selectedDiet === value) {
+      setSelectedDiet(''); // Deselect if clicking the same one
+    } else {
+      setSelectedDiet(value);
+    }
+  };
+
+  const handleCuisineToggle = (value) => {
+    const newSet = new Set(selectedCuisines);
+    if (newSet.has(value)) {
+      newSet.delete(value);
+    } else {
+      newSet.add(value);
+    }
+    setSelectedCuisines(newSet);
+  };
+
+  const handleSave = async () => {
+    const storedUser = user || JSON.parse(localStorage.getItem('user'));
+    
+    if (!storedUser || !storedUser.id) {
+      alert("No user is logged in. Redirecting to login.");
+      navigate('/login');
+      return;
+    }
+
+    // Prepare the data to match backend expectations
+    const preferences = {
+      allergies: Array.from(selectedAllergies),
+      dietaryPlan: selectedDiet || null,
+      favoriteCuisines: Array.from(selectedCuisines),
+    };
+
+    console.log('Saving preferences:', preferences); // Debug log
+
+    try {
+      setLoading(true);
+      const response = await axios.put(
+        `http://localhost:8080/api/users/${storedUser.id}/profile`, 
+        preferences
+      );
+      
+      console.log("Preferences saved successfully:", response.data);
+      alert('Preferences saved successfully!');
+      navigate('/home');
+
+    } catch (error) {
+      console.error('Failed to save preferences:', error);
+      alert('Failed to save preferences: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSkip = (e) => {
     e.preventDefault();
-    navigate('/home');   // <-- REDIRECT AFTER SKIP
+    navigate('/home');
   };
 
   return (
@@ -53,49 +132,53 @@ function PreferencesPage() {
             {allergyOptions.map(option => (
               <PreferenceOption
                 key={option.value}
-                label={option.label}
+                label={option.label.replace('-free', '')}
                 isSelected={selectedAllergies.has(option.value)}
-                onClick={() => handleToggle(setSelectedAllergies, selectedAllergies, option.value)}
+                onClick={() => handleAllergyToggle(option.value)}
               />
             ))}
           </div>
         </section>
 
         <section className="preference-section">
-          <h2>Dietary Plan</h2>
+          <h2>Dietary Plan (Select One)</h2>
           <div className="options-grid">
             {dietOptions.map(option => (
               <PreferenceOption
                 key={option.value}
                 label={option.label}
-                isSelected={selectedDiets.has(option.value)}
-                onClick={() => handleToggle(setSelectedDiets, selectedDiets, option.value)}
+                isSelected={selectedDiet === option.value}
+                onClick={() => handleDietToggle(option.value)}
               />
             ))}
           </div>
         </section>
 
         <section className="preference-section">
-          <h2>Cuisine</h2>
+          <h2>Favorite Cuisines</h2>
           <div className="options-grid">
             {cuisineOptions.map(option => (
               <PreferenceOption
                 key={option.value}
                 label={option.label}
                 isSelected={selectedCuisines.has(option.value)}
-                onClick={() => handleToggle(setSelectedCuisines, selectedCuisines, option.value)}
+                onClick={() => handleCuisineToggle(option.value)}
               />
             ))}
           </div>
         </section>
 
-         <footer className="preferences-actions">
+        <footer className="preferences-actions">
           <a href="#" onClick={handleSkip} className="skip-link">
             Skip for now →
           </a>
 
-          <button className="save-button" onClick={handleSave}>
-            Save & Continue
+          <button 
+            className="save-button" 
+            onClick={handleSave}
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : 'Save & Continue'}
           </button>
         </footer>
       </div>

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
+import { useUser } from '../context/UserContext';
 import '../assets/styles/RecipeDetail.css';
+import { allergyOptions } from '../data/preferenceData';
 
 // A component for the Nutrition Fact bars
 const NutritionBar = ({ label, displayValue, numericValue, max }) => {
@@ -26,17 +28,17 @@ function RecipeDetailPage() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
-
+  
   const [nutritionData, setNutritionData] = useState(null);
 
-  // Get logged-in user ID from localStorage
+
   const getUser = () => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   };
 
   const currentUser = getUser();
-  const userId = currentUser?.id || 1;
+    const userId = currentUser?.id || 1;
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
@@ -162,8 +164,22 @@ function RecipeDetailPage() {
           <section className="recipe-title-section">
             <h1>{recipe.name}</h1>
             <div className="recipe-tags">
-              {recipe.dietaryTags?.map(tag => <span key={tag} className="recipe-tag">{tag}</span>)}
-              {recipe.allergenInfo?.map(allergen => <span key={allergen} className="recipe-tag">{allergen.replace(/_/g, ' ')}-Free</span>)}
+              {recipe.dietaryTags?.map(tag => (
+                <span key={tag} className="recipe-tag">{tag}</span>
+              ))}
+              {allergyOptions
+                .filter(option => !recipe.allergenInfo?.includes(option.value))
+                .map(option => (
+                  <span key={option.value} className="recipe-tag">
+                    {option.label}
+                  </span>
+                ))
+              }
+              {recipe.allergenInfo?.map(allergen => (
+                <span key={allergen} className="recipe-tag warning">
+                  Contains: {allergen}
+                </span>
+              ))}
             </div>
           </section>
 

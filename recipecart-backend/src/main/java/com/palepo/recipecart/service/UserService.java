@@ -56,6 +56,36 @@ public class UserService {
         return saved;
     }
 
+    /**
+     * Get user profile - NEW METHOD
+     */
+    @Transactional
+    public UserProfile getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        
+        UserProfile profile = user.getUserProfile();
+        
+        if (profile == null) {
+            // Create empty profile if it doesn't exist
+            profile = new UserProfile();
+            profile.setUser(user);
+            profile = userProfileRepository.save(profile);
+            user.setUserProfile(profile);
+            userRepository.save(user);
+        }
+        
+        // Force initialization of lazy collections
+        if (profile.getAllergies() != null) {
+            profile.getAllergies().size();
+        }
+        if (profile.getFavoriteCuisines() != null) {
+            profile.getFavoriteCuisines().size();
+        }
+        
+        return profile;
+    }
+
     @Transactional
     public UserProfile updateUserProfile(Long userId, UserProfile userProfileData) {
         User user = userRepository.findById(userId)

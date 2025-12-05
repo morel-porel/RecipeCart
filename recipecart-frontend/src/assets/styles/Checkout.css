@@ -1,7 +1,19 @@
+.checkout-page-wrapper {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
 .checkout-page {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 0 2rem 0;
+  color: #1f2937;
 }
 
 .section-title {
@@ -71,6 +83,7 @@
   padding: 0.75rem 1rem;
   font-size: 1rem;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -198,6 +211,14 @@
 
 .back-button:hover {
   background-color: #d1d5db;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  font-size: 1.25rem;
 }
 
 /* Responsive Design */

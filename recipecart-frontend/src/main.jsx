@@ -14,6 +14,7 @@ import OrderHistory from './pages/OrderHistory.jsx';
 import './index.css';
 import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
+import { UserProvider } from './context/UserContext.jsx';
 
 import CashierPage from './pages/CashierPage.jsx';
 import UserOrders from './pages/UserOrders.jsx';
@@ -70,6 +71,17 @@ const router = createBrowserRouter([
         path: 'user-orders',   // URL: /user-orders
         element: <UserOrders />,
       }
+        path: 'order-summary',   // URL: /user-orders
+        element: <OrderPage />,
+      },
+      {
+        path: 'add-recipe',
+        element: <AddRecipePage />,
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage />,
+      },
 
     ],
   },
@@ -78,6 +90,8 @@ const router = createBrowserRouter([
 // Render the RouterProvider with the defined router
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );

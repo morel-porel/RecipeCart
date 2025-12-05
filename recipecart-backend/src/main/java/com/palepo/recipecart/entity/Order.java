@@ -1,10 +1,12 @@
 package com.palepo.recipecart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.palepo.recipecart.OrderStatus;
 import com.palepo.recipecart.PaymentType;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Entity
 @Table(name = "orders")
@@ -14,6 +16,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -35,6 +38,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Payment payment;
 

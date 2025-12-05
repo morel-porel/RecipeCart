@@ -56,11 +56,25 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .new-orders-title {
   font-size: 28px;
   font-weight: 700;
   color: #2c3e50;
+}
+.add-recipe-nav-btn {
+  background-color: #4CAF50; /* RecipeCart Green */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .add-recipe-nav-btn {
@@ -116,6 +130,22 @@
   gap: 10px;
   width: 100%;
   max-width: 500px;
+.add-recipe-nav-btn:hover {
+  background-color: #45a049; /* Slightly darker green */
+  transform: translateY(-1px);
+}
+
+.add-recipe-nav-btn:active {
+  transform: translateY(0);
+}
+.cashier-search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 5px 10px;
+  overflow: hidden;
 }
 
 .cashier-search-bar input {

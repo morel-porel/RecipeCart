@@ -1,6 +1,7 @@
 package com.palepo.recipecart.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "order_items")
@@ -10,16 +11,21 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // CHANGED: FetchType.LAZY to FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column(name = "recipe_source")
+    private String recipeSource;
 
     @Column(name = "price_at_purchase", nullable = false)
     private Double priceAtPurchase;
@@ -71,5 +77,13 @@ public class OrderItem {
 
     public void setPriceAtPurchase(Double priceAtPurchase) {
         this.priceAtPurchase = priceAtPurchase;
+    }
+
+    public String getRecipeSource() {
+        return recipeSource;
+    }
+
+    public void setRecipeSource(String recipeSource) {
+        this.recipeSource = recipeSource;
     }
 }

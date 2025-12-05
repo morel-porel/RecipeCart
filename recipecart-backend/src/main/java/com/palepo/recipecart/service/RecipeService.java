@@ -2,22 +2,33 @@ package com.palepo.recipecart.service;
 
 import com.palepo.recipecart.entity.Ingredient;
 import com.palepo.recipecart.entity.Recipe;
+import com.palepo.recipecart.entity.User;
+import com.palepo.recipecart.entity.UserProfile;
 import com.palepo.recipecart.repository.RecipeRepository;
+import com.palepo.recipecart.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
 
-    public RecipeService(RecipeRepository recipeRepository){
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository){
         this.recipeRepository = recipeRepository;
+        this.userRepository = userRepository;
     }
     public Recipe createRecipe(Recipe recipe){
+        if (recipe.getRecipeIngredients() != null) {
+            for (var ri : recipe.getRecipeIngredients()) {
+                ri.setRecipe(recipe); // Sets the recipe_id foreign key
+            }
+        }
         return recipeRepository.save(recipe);
     }
     public List<Recipe> getAllRecipes(){
@@ -45,21 +56,17 @@ public class RecipeService {
                 (excludeAllergen != null && !excludeAllergen.trim().isEmpty());
 
         if (hasAnyFilter) {
-                // Call your single, powerful custom method
             return recipeRepository.findRecipesByFilters(cuisine, dietaryTags, excludeAllergen);
         } else {
-                // If no filters are provided, return everything
             return recipeRepository.findAll();
         }
     }
 
-    @Transactional // Good practice for methods that modify data
+    @Transactional
     public Recipe updateRecipe(Long id, Recipe recipeDetails) {
-        // 1. Find the existing recipe in the database
         Recipe existingRecipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Recipe not found with ID: " + id));
 
-        // 2. Update the fields of the existing recipe with the new details
         existingRecipe.setName(recipeDetails.getName());
         existingRecipe.setInstructions(recipeDetails.getInstructions());
         existingRecipe.setNutritionFacts(recipeDetails.getNutritionFacts());
@@ -71,17 +78,35 @@ public class RecipeService {
         existingRecipe.getAllergenInfo().clear();
         existingRecipe.getAllergenInfo().addAll(recipeDetails.getAllergenInfo());
 
-        // 3. Save the updated recipe back to the database
         return recipeRepository.save(existingRecipe);
     }
 
     public void deleteRecipe(Long id) {
-        // 1. Check if the recipe exists before trying to delete it
         if (!recipeRepository.existsById(id)) {
             throw new EntityNotFoundException("Recipe not found with ID: " + id);
         }
-        // 2. Delete the recipe
         recipeRepository.deleteById(id);
+    }
+
+    public List<Recipe> getRecommendationsForUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
+        UserProfile profile = user.getUserProfile();
+
+        if (profile == null) {
+            return Collections.emptyList();
+        }
+
+        String preferredCuisine = profile.getFavoriteCuisines().stream().findFirst().orElse(null);
+        String dietaryPlan = profile.getDietaryPlan();
+        String excludeAllergen = profile.getAllergies().stream().findFirst().orElse(null);
+
+        if (preferredCuisine != null) {
+            return recipeRepository.findRecipesByFilters(preferredCuisine, Set.of(dietaryPlan), excludeAllergen);
+        }
+
+        return Collections.emptyList();
     }
 
 }

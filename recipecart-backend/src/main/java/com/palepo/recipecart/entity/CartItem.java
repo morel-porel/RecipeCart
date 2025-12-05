@@ -1,10 +1,9 @@
 package com.palepo.recipecart.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "cart_items")
@@ -29,12 +28,23 @@ public class CartItem {
     @Min(value = 1, message = "Quantity must be at least 1")
     private Integer quantity;
 
+    // Track which recipe this item came from (optional)
+    @Column(name = "recipe_source")
+    private String recipeSource;
+
     public CartItem() {}
 
     public CartItem(ShoppingCart cart, Ingredient ingredient, Integer quantity) {
         this.cart = cart;
         this.ingredient = ingredient;
         this.quantity = quantity;
+    }
+
+    public CartItem(ShoppingCart cart, Ingredient ingredient, Integer quantity, String recipeSource) {
+        this.cart = cart;
+        this.ingredient = ingredient;
+        this.quantity = quantity;
+        this.recipeSource = recipeSource;
     }
 
     public Long getId() {
@@ -67,6 +77,14 @@ public class CartItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getRecipeSource() {
+        return recipeSource;
+    }
+
+    public void setRecipeSource(String recipeSource) {
+        this.recipeSource = recipeSource;
     }
 
     // Helper method to calculate item total

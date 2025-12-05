@@ -4,9 +4,11 @@ import axios from 'axios';
 import InputField from './InputField';
 import Button from './Button';
 import Logo from './Logo';
+import { useUser } from '../context/UserContext.jsx'; 
 
 function RegisterForm() {
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,6 +56,7 @@ function RegisterForm() {
         role: 'USER'
       });
 
+      setUser(response.data); 
       console.log('Registration successful:', response.data);
 
       // Save user to localStorage

@@ -166,3 +166,8 @@
   line-height: 1.6;
   color: var(--text-dark);
 }
+.recipe-tag.warning {
+  background-color: #fff3cd; /* Light Yellow */
+  color: #856404; /* Dark Yellow/Brown text */
+  border: 1px solid #ffeeba;
+}

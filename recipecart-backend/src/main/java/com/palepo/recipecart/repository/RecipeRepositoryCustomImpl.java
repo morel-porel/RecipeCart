@@ -34,8 +34,6 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
         // 2. Add DIETARY TAGS filter if provided
         if (dietaryTags != null && !dietaryTags.isEmpty()) {
             // This creates a predicate for each tag and ORs them together if needed,
-            // but for a simple "must contain this tag" we can just check one.
-            // For a "must contain ALL tags", this logic would be more complex.
             for (String tag : dietaryTags) {
                 predicates.add(cb.isMember(tag, recipe.get("dietaryTags")));
             }
