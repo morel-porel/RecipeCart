@@ -24,6 +24,11 @@ public class RecipeService {
         this.userRepository = userRepository;
     }
     public Recipe createRecipe(Recipe recipe){
+        if (recipe.getRecipeIngredients() != null) {
+            for (var ri : recipe.getRecipeIngredients()) {
+                ri.setRecipe(recipe); // Sets the recipe_id foreign key
+            }
+        }
         return recipeRepository.save(recipe);
     }
     public List<Recipe> getAllRecipes(){
