@@ -77,7 +77,16 @@ const OrderHistory = () => {
       <MainNavbar />
 
       <div className="orders-page">
-        <h1 className="page-title">Order History</h1>
+        <div className="page-title-with-back">
+          <button
+            className="back-button"
+            onClick={() => navigate("/profile")}
+          >
+            ←
+          </button>
+          <h1 className="page-title">Order History</h1>
+        </div>
+
 
         {orders.length === 0 ? (
           <div className="empty-orders">
