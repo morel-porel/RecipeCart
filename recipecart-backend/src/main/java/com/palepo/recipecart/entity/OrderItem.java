@@ -24,6 +24,9 @@ public class OrderItem {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(name = "recipe_source")
+    private String recipeSource;
+
     @Column(name = "price_at_purchase", nullable = false)
     private Double priceAtPurchase;
 
@@ -74,5 +77,13 @@ public class OrderItem {
 
     public void setPriceAtPurchase(Double priceAtPurchase) {
         this.priceAtPurchase = priceAtPurchase;
+    }
+
+    public String getRecipeSource() {
+        return recipeSource;
+    }
+
+    public void setRecipeSource(String recipeSource) {
+        this.recipeSource = recipeSource;
     }
 }
