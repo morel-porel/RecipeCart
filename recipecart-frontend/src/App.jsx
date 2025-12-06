@@ -1,10 +1,13 @@
 import { Outlet } from 'react-router-dom';
+import { PopupProvider } from './components/CustomPopup';
 
 function App() {
   return (
-    <div>
-      <Outlet />
-    </div>
+    <PopupProvider>
+      <div>
+        <Outlet />
+      </div>
+    </PopupProvider>
   );
 }
 

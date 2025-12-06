@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/ProfilePage.css';
+import { usePopup } from '../components/CustomPopup';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('account');
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { showPopup } = usePopup();
   
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -24,7 +26,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (!storedUser || !storedUser.id) {
-      alert('Please log in to view your profile');
+      showPopup('Please log in to view your profile', 'error');
       navigate('/login');
       return;
     }
@@ -56,7 +58,7 @@ const ProfilePage = () => {
       
     } catch (error) {
       console.error('Error fetching user data:', error);
-      alert('Failed to load profile data');
+      showPopup('Failed to load profile data', 'error');
     } finally {
       setLoading(false);
     }
@@ -79,11 +81,11 @@ const ProfilePage = () => {
     try {
       // Update basic user info (if endpoint exists)
       // For now, we'll just show a message since we don't have an update user endpoint
-      alert('User info update not yet implemented in backend');
+      showPopup('User info update not yet implemented in backend', 'info');
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile');
+      showPopup('Failed to update profile', 'error');
     }
   };
 

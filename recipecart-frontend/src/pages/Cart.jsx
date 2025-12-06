@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../assets/styles/Cart.css';
 import MainNavbar from '../components/MainNavbar';
+import { usePopup } from '../components/CustomPopup';
 
 const Cart = () => {
+  const { showPopup } = usePopup();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,7 +50,7 @@ const Cart = () => {
       );
       setCart(response.data);
     } catch (err) {
-      alert('Failed to update quantity: ' + err.response?.data?.message);
+      showPopup('Failed to update quantity: ' + err.response?.data?.message, 'error');
     }
   };
 
@@ -59,7 +61,7 @@ const Cart = () => {
       );
       setCart(response.data);
     } catch (err) {
-      alert('Failed to remove item');
+      showPopup('Failed to remove item', 'error');
     }
   };
 
@@ -72,7 +74,7 @@ const Cart = () => {
 
   const handleProceedToPayment = () => {
     if (!cart || !cart.items || cart.items.length === 0) {
-      alert('Your cart is empty');
+      showPopup('Your cart is empty', 'error');
       return;
     }
     navigate('/checkout');
