@@ -4,6 +4,7 @@ import axios from 'axios';
 import InputField from './InputField';
 import Button from './Button';
 import Logo from './Logo';
+import { usePopup } from '../components/CustomPopup';
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { showPopup } = usePopup();
 
   const API_BASE_URL = 'http://localhost:8080/api';
 
@@ -40,7 +42,7 @@ function LoginForm() {
       localStorage.setItem('user', JSON.stringify(user));
 
       // Show success message
-      alert('Logged in successfully!');
+      showPopup('Logged in successfully!', 'success');
 
       // Navigate to home page
       navigate('/home');

@@ -6,13 +6,14 @@ import colorfulLogo from '../assets/images/logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext.jsx';
 import axios from 'axios';
+import { usePopup } from '../components/CustomPopup';
 
 function PreferencesPage() {
   const [selectedAllergies, setSelectedAllergies] = useState(new Set());
   const [selectedDiet, setSelectedDiet] = useState(''); // Changed to single value
   const [selectedCuisines, setSelectedCuisines] = useState(new Set());
   const [loading, setLoading] = useState(false);
-
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
   const { user } = useUser();
 
@@ -76,7 +77,7 @@ function PreferencesPage() {
     const storedUser = user || JSON.parse(localStorage.getItem('user'));
     
     if (!storedUser || !storedUser.id) {
-      alert("No user is logged in. Redirecting to login.");
+      showPopup("No user is logged in. Redirecting to login.", "error");
       navigate('/login');
       return;
     }
@@ -98,12 +99,12 @@ function PreferencesPage() {
       );
       
       console.log("Preferences saved successfully:", response.data);
-      alert('Preferences saved successfully!');
+      showPopup('Preferences saved successfully!', 'success');
       navigate('/home');
 
     } catch (error) {
       console.error('Failed to save preferences:', error);
-      alert('Failed to save preferences: ' + (error.response?.data?.message || error.message));
+      showPopup('Failed to save preferences: ' + (error.response?.data?.message || error.message), 'error');
     } finally {
       setLoading(false);
     }

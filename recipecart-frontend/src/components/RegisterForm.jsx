@@ -5,6 +5,7 @@ import InputField from './InputField';
 import Button from './Button';
 import Logo from './Logo';
 import { useUser } from '../context/UserContext.jsx'; 
+import { usePopup } from '../components/CustomPopup';
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { showPopup } = usePopup();
 
   const API_BASE_URL = 'http://localhost:8080/api';
 
@@ -63,7 +65,7 @@ function RegisterForm() {
       localStorage.setItem('user', JSON.stringify(response.data));
 
       // Show success message
-      alert('Account created successfully!');
+      showPopup('Account created successfully!', 'success');
 
       // Navigate to preferences page
       navigate('/preferences');

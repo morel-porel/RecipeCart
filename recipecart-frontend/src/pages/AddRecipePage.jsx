@@ -4,9 +4,11 @@ import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import { dietOptions, allergyOptions, cuisineOptions } from '../data/preferenceData';
 import '../assets/styles/AddRecipePage.css';
+import { usePopup } from '../components/CustomPopup';
 
 function AddRecipePage() {
   const navigate = useNavigate();
+  const { showPopup } = usePopup();
 
   // --- State Management ---
   const [name, setName] = useState('');
@@ -113,11 +115,11 @@ function AddRecipePage() {
     // 3. Send to Backend
     try {
       await axios.post('http://localhost:8080/api/recipes', newRecipeData);
-      alert('Recipe created successfully!');
+      showPopup('Recipe created successfully!', 'success');
       navigate('/home');
     } catch (error) {
       console.error("Failed to create recipe:", error);
-      alert('Error creating recipe.');
+      showPopup('Error creating recipe.', 'error');
     }
   };
 

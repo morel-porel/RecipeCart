@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/Checkout.css';
+import { usePopup } from '../components/CustomPopup';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -21,11 +22,13 @@ const Checkout = () => {
     email: '',
   });
 
+  const { showPopup } = usePopup();
+
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
     if (!userId) {
-      alert("You must be logged in to checkout");
+      showPopup('You must be logged in to checkout', 'error');
       navigate('/login');
       return;
     }
@@ -39,7 +42,7 @@ const Checkout = () => {
       setCart(response.data);
       setLoading(false);
     } catch (err) {
-      alert("Failed to load cart");
+      showPopup('Failed to load cart', 'error');
       navigate('/cart');
     }
   };
@@ -53,20 +56,20 @@ const Checkout = () => {
 
   const validateForm = () => {
     if (!paymentMethod) {
-      alert('Please select a payment method');
+      showPopup('Please select a payment method', 'error');
       return false;
     }
 
     if (paymentMethod === 'PAY_IN_STORE') {
       if (!reservationDetails.fullName || !reservationDetails.contactNumber) {
-        alert('Please fill in all reservation details');
+        showPopup('Please fill in all required reservation details', 'error');
         return false;
       }
     }
 
     if (paymentMethod === 'PAID_ONLINE') {
       if (!paymentOption) {
-        alert('Please select a payment option');
+        showPopup('Please select a payment option', 'error');
         return false;
       }
     }
@@ -85,10 +88,10 @@ const Checkout = () => {
         paymentType: paymentMethod
       });
 
-      alert('Order placed successfully! Order ID: ' + response.data.id);
-      navigate('/orders');
+      showPopup('Order placed successfully! Order ID: ' + response.data.id, 'success');
+      navigate('/home');
     } catch (err) {
-      alert('Failed to place order: ' + (err.response?.data?.message || 'Unknown error'));
+      showPopup('Failed to place order: ' + (err.response?.data?.message || 'Unknown error'), 'error');
     } finally {
       setProcessing(false);
     }

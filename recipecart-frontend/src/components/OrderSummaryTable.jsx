@@ -1,8 +1,11 @@
 import React from "react";
 import "../assets/styles/OrderSummaryTable.css";
 import Button from "./Button";
+import { usePopup } from '../components/CustomPopup';
 
 function OrderSummaryTable() {
+  const { showPopup } = usePopup();
+
   return (
     <div className="order-summary-wrapper">
 
@@ -46,7 +49,7 @@ function OrderSummaryTable() {
 
           {/* COMPLETE ORDER BUTTON (RIGHT) */}
           <div className="complete-order-button">
-            <Button onClick={() => alert("Order Completed!")}>
+            <Button onClick={() => showPopup('Order completed successfully!', 'success')}>
               Complete Order
             </Button>
           </div>

@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
+import { usePopup } from '../components/CustomPopup';
 
 const OrderHistory = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopup();
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.id;
@@ -28,7 +30,7 @@ const OrderHistory = () => {
 
   useEffect(() => {
     if (!userId) {
-      alert("You must be logged in to view orders.");
+      showPopup("You must be logged in to view orders.", "error");
       return navigate("/login");
     }
     fetchOrders();
@@ -50,10 +52,10 @@ const OrderHistory = () => {
 
     try {
       await axios.put(`${API_BASE_URL}/orders/${orderId}/cancel`, { userId });
-      alert("Order canceled.");
+      showPopup("Order canceled.", "success");
       fetchOrders();
     } catch (err) {
-      alert("Failed: " + (err.response?.data?.message || "Unknown error"));
+      showPopup("Failed: " + (err.response?.data?.message || "Unknown error"), "error");
     }
   };
 

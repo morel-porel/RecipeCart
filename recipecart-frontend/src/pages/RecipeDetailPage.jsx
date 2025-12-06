@@ -5,6 +5,7 @@ import MainNavbar from '../components/MainNavbar';
 import { useUser } from '../context/UserContext';
 import '../assets/styles/RecipeDetail.css';
 import { allergyOptions } from '../data/preferenceData';
+import { usePopup } from '../components/CustomPopup';
 
 // A component for the Nutrition Fact bars
 const NutritionBar = ({ label, displayValue, numericValue, max }) => {
@@ -25,12 +26,12 @@ function RecipeDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
+  const { showPopup } = usePopup(); // FIXED: Moved here to the main component
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
   
   const [nutritionData, setNutritionData] = useState(null);
-
 
   const getUser = () => {
     const userStr = localStorage.getItem('user');
@@ -38,7 +39,7 @@ function RecipeDetailPage() {
   };
 
   const currentUser = getUser();
-    const userId = currentUser?.id || 1;
+  const userId = currentUser?.id || 1;
   const API_BASE_URL = 'http://localhost:8080/api';
 
   useEffect(() => {
@@ -68,7 +69,7 @@ function RecipeDetailPage() {
 
   const handleAddIngredientsToCart = async () => {
     if (!recipe || !recipe.recipeIngredients) {
-      alert('No ingredients to add');
+      showPopup('No ingredients to add', 'error');
       return;
     }
 
@@ -92,7 +93,7 @@ function RecipeDetailPage() {
 
       await Promise.all(addPromises);
 
-      alert(`Successfully added ${recipe.recipeIngredients.length} ingredients to cart!`);
+      showPopup(`Successfully added ${recipe.recipeIngredients.length} ingredients to cart!`, 'success');
       
       // Ask user if they want to go to cart
       const goToCart = window.confirm('Ingredients added! Go to cart now?');
@@ -102,7 +103,7 @@ function RecipeDetailPage() {
 
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to add ingredients to cart';
-      alert(errorMessage);
+      showPopup(errorMessage, 'error');
       console.error('Error adding ingredients to cart:', error);
     } finally {
       setAddingToCart(false);
