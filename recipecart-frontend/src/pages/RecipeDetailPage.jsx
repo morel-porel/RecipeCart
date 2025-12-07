@@ -6,6 +6,7 @@ import { useUser } from '../context/UserContext';
 import '../assets/styles/RecipeDetail.css';
 import { allergyOptions } from '../data/preferenceData';
 import { usePopup } from '../components/CustomPopup';
+import { useConfirm } from '../components/CustomConfirm';
 
 // A component for the Nutrition Fact bars
 const NutritionBar = ({ label, displayValue, numericValue, max }) => {
@@ -27,6 +28,7 @@ function RecipeDetailPage() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { showPopup } = usePopup(); // FIXED: Moved here to the main component
+  const { showConfirm } = useConfirm();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
@@ -96,7 +98,7 @@ function RecipeDetailPage() {
       showPopup(`Successfully added ${recipe.recipeIngredients.length} ingredients to cart!`, 'success');
       
       // Ask user if they want to go to cart
-      const goToCart = window.confirm('Ingredients added! Go to cart now?');
+      const goToCart = await showConfirm('Ingredients added! Go to cart now?', 'Success');
       if (goToCart) {
         navigate('/cart');
       }

@@ -190,10 +190,10 @@ const Checkout = () => {
 
             <div className="pickup-info">
               <h4>Pickup Location</h4>
-              <p>Something something location, Elsewhere Street</p>
+              <p>RecipeCart Main, Somewhere Street</p>
 
               <h4>Pickup Date and Time:</h4>
-              <p>07/11/24 &nbsp;&nbsp; 9:00 AM - 10:00 PM</p>
+              <p>12/11/25 &nbsp;&nbsp; 9:00 AM - 10:00 PM</p>
             </div>
           </div>
         )}
@@ -270,7 +270,18 @@ const Checkout = () => {
 
           <button
             onClick={() => navigate('/cart')}
-            className="back-button"
+            style={{ 
+               width: '100%',
+               backgroundColor: '#e5e7eb',
+               color: '#374151',
+               padding: '0.75rem',
+               borderRadius: '0.5rem',
+               border: 'none',
+               fontSize: '1.125rem',
+               fontWeight: 600,
+               cursor: 'pointer',
+               transition: 'background-color 0.2s'
+            }}
           >
             Back to Cart
           </button>

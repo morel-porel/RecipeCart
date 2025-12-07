@@ -152,7 +152,8 @@
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .orders-table {
@@ -178,6 +179,7 @@
 .orders-table td {
   padding: 15px;
   border-bottom: 1px solid #f1f3f5;
+  position: relative;
 }
 
 .orders-table tbody tr {
