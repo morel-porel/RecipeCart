@@ -1,7 +1,9 @@
+// recipecart-frontend/src/pages/OrderDetails.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderDetails.css';
+import { formatIngredientPrice, formatQuantityWithUnit } from '../utils/priceUtils';
 
 const API_BASE_URL = 'http://localhost:8080/api/cashier';
 
@@ -212,17 +214,28 @@ export default function OrderDetails() {
               </tr>
             </thead>
             <tbody>
-              {order.orderItems.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.ingredient.name}</td>
-                  <td>{item.quantity}</td>
-                  <td>₱{(item.priceAtPurchase / item.quantity).toFixed(2)}</td>
-                  <td>₱{item.priceAtPurchase.toFixed(2)}</td>
-                  {order.orderItems.some(item => item.recipeSource) && (
-                    <td>{item.recipeSource || '-'}</td>
-                  )}
-                </tr>
-              ))}
+              {order.orderItems.map((item, index) => {
+                const priceInfo = formatIngredientPrice(item.ingredient);
+                const quantityDisplay = formatQuantityWithUnit(item.quantity, item.ingredient.unit);
+                const unitPrice = item.priceAtPurchase / item.quantity;
+
+                return (
+                  <tr key={index}>
+                    <td>
+                      <div>{item.ingredient.name}</div>
+                      <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                        {priceInfo.formattedPrice}
+                      </div>
+                    </td>
+                    <td>{quantityDisplay}</td>
+                    <td>₱{unitPrice.toFixed(2)}</td>
+                    <td>₱{item.priceAtPurchase.toFixed(2)}</td>
+                    {order.orderItems.some(item => item.recipeSource) && (
+                      <td>{item.recipeSource || '-'}</td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
             <tfoot>
               <tr className="od-total-row">

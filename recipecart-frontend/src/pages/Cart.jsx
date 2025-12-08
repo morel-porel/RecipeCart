@@ -1,9 +1,11 @@
+// recipecart-frontend/src/pages/Cart.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../assets/styles/Cart.css';
 import MainNavbar from '../components/MainNavbar';
 import { usePopup } from '../components/CustomPopup';
+import { formatIngredientPrice, calculateItemTotal, formatQuantityWithUnit } from '../utils/priceUtils';
 
 const Cart = () => {
   const { showPopup } = usePopup();
@@ -68,7 +70,7 @@ const Cart = () => {
   const calculateTotal = () => {
     if (!cart || !cart.items) return 0;
     return cart.items.reduce((total, item) => {
-      return total + item.ingredient.price * item.quantity;
+      return total + calculateItemTotal(item.ingredient, item.quantity);
     }, 0);
   };
 
@@ -98,6 +100,61 @@ const Cart = () => {
   };
 
   const groupedItems = groupItemsByRecipe();
+
+  const renderCartItem = (item) => {
+    const priceInfo = formatIngredientPrice(item.ingredient);
+    const itemTotal = calculateItemTotal(item.ingredient, item.quantity);
+    const quantityDisplay = formatQuantityWithUnit(item.quantity, item.ingredient.unit);
+
+    return (
+      <div key={item.id} className="cart-item">
+        <div className="item-info">
+          <div className="item-image">
+            <span>🥚</span>
+          </div>
+          <div className="item-details">
+            <p className="item-name">{item.ingredient.name}</p>
+            <p className="item-unit">{priceInfo.formattedPrice}</p>
+            {item.recipeSource && !groupedView && (
+              <p className="item-recipe-tag">From: {item.recipeSource}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="item-price">
+          {quantityDisplay}
+        </div>
+
+        <div className="item-quantity">
+          <button
+            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+            className="quantity-btn"
+            disabled={item.quantity <= 1}
+          >
+            -
+          </button>
+          <span className="quantity-value">{item.quantity}</span>
+          <button
+            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+            className="quantity-btn"
+          >
+            +
+          </button>
+          <button
+            onClick={() => removeItem(item.id)}
+            className="remove-btn"
+            title="Remove item"
+          >
+            🗑️
+          </button>
+        </div>
+
+        <div className="item-total">
+          ₱{itemTotal.toFixed(2)}
+        </div>
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -153,56 +210,12 @@ const Cart = () => {
                     <div className="cart-container">
                       <div className="cart-header">
                         <div className="header-item">Item</div>
-                        <div className="header-price">Price</div>
-                        <div className="header-quantity">Quantity</div>
+                        <div className="header-price">Quantity</div>
+                        <div className="header-quantity">Actions</div>
                         <div className="header-total">Total</div>
                       </div>
 
-                      {items.map((item) => (
-                        <div key={item.id} className="cart-item">
-                          <div className="item-info">
-                            <div className="item-image">
-                              <span>🥚</span>
-                            </div>
-                            <div className="item-details">
-                              <p className="item-name">{item.ingredient.name}</p>
-                              <p className="item-unit">{item.ingredient.unit}</p>
-                            </div>
-                          </div>
-
-                          <div className="item-price">
-                            ₱{item.ingredient.price.toFixed(2)}
-                          </div>
-
-                          <div className="item-quantity">
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              className="quantity-btn"
-                              disabled={item.quantity <= 1}
-                            >
-                              -
-                            </button>
-                            <span className="quantity-value">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="quantity-btn"
-                            >
-                              +
-                            </button>
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="remove-btn"
-                              title="Remove item"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-
-                          <div className="item-total">
-                            ₱{(item.ingredient.price * item.quantity).toFixed(2)}
-                          </div>
-                        </div>
-                      ))}
+                      {items.map(renderCartItem)}
                     </div>
                   </div>
                 ))}
@@ -211,59 +224,12 @@ const Cart = () => {
               <div className="cart-container">
                 <div className="cart-header">
                   <div className="header-item">Shopping Cart</div>
-                  <div className="header-price">Price</div>
-                  <div className="header-quantity">Quantity</div>
+                  <div className="header-price">Quantity</div>
+                  <div className="header-quantity">Actions</div>
                   <div className="header-total">Total</div>
                 </div>
 
-                {cart.items?.map((item) => (
-                  <div key={item.id} className="cart-item">
-                    <div className="item-info">
-                      <div className="item-image">
-                        <span>🥚</span>
-                      </div>
-                      <div className="item-details">
-                        <p className="item-name">{item.ingredient.name}</p>
-                        <p className="item-unit">{item.ingredient.unit}</p>
-                        {item.recipeSource && (
-                          <p className="item-recipe-tag">From: {item.recipeSource}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="item-price">
-                      ₱{item.ingredient.price.toFixed(2)}
-                    </div>
-
-                    <div className="item-quantity">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="quantity-btn"
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="quantity-value">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="quantity-btn"
-                      >
-                        +
-                      </button>
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="remove-btn"
-                        title="Remove item"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-
-                    <div className="item-total">
-                      ₱{(item.ingredient.price * item.quantity).toFixed(2)}
-                    </div>
-                  </div>
-                ))}
+                {cart.items?.map(renderCartItem)}
               </div>
             )}
 
