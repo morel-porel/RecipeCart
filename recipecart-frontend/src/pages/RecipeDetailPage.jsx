@@ -1,3 +1,4 @@
+// recipecart-frontend/src/pages/RecipeDetailPage.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import '../assets/styles/RecipeDetail.css';
 import { allergyOptions } from '../data/preferenceData';
 import { usePopup } from '../components/CustomPopup';
 import { useConfirm } from '../components/CustomConfirm';
+import { formatIngredientPrice, calculateItemTotal, formatQuantityWithUnit, formatPriceForQuantity } from '../utils/priceUtils';
 
 // A component for the Nutrition Fact bars
 const NutritionBar = ({ label, displayValue, numericValue, max }) => {
@@ -27,7 +29,7 @@ function RecipeDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
-  const { showPopup } = usePopup(); // FIXED: Moved here to the main component
+  const { showPopup } = usePopup();
   const { showConfirm } = useConfirm();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -112,6 +114,14 @@ function RecipeDetailPage() {
     }
   };
 
+  // Calculate total cost of all ingredients
+  const calculateTotalCost = () => {
+    if (!recipe || !recipe.recipeIngredients) return 0;
+    return recipe.recipeIngredients.reduce((total, item) => {
+      return total + calculateItemTotal(item.ingredient, Math.ceil(item.quantity));
+    }, 0);
+  };
+
   if (loading) {
     return (
       <>
@@ -129,6 +139,8 @@ function RecipeDetailPage() {
       </>
     );
   }
+
+  const totalCost = calculateTotalCost();
 
   return (
     <div className="recipe-detail-page">
@@ -160,6 +172,14 @@ function RecipeDetailPage() {
           ) : (
             <p>{recipe.nutritionFacts}</p>
           )}
+
+          {/* Show total cost */}
+          <div className="nutrition-item" style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #e0e0e0' }}>
+            <strong>Estimated Cost</strong>
+            <span style={{ fontSize: '20px', color: '#4CAF50', fontWeight: 'bold' }}>
+              ₱{totalCost.toFixed(2)}
+            </span>
+          </div>
         </aside>
 
         {/* Main Content Area */}
@@ -198,11 +218,20 @@ function RecipeDetailPage() {
               </button>
             </div>
             <ul className="ingredients-list">
-              {recipe.recipeIngredients?.map(item => (
-                <li key={item.id}>
-                  {item.quantity} {item.unit} {item.ingredient.name}
-                </li>
-              ))}
+              {recipe.recipeIngredients?.map(item => {
+                const priceInfo = formatIngredientPrice(item.ingredient);
+                const itemCost = calculateItemTotal(item.ingredient, Math.ceil(item.quantity));
+                const quantityDisplay = formatQuantityWithUnit(item.quantity, item.unit);
+                
+                return (
+                  <li key={item.id}>
+                    <strong>{quantityDisplay}</strong> {item.ingredient.name}
+                    <span style={{ color: '#777', fontSize: '14px', marginLeft: '10px' }}>
+                      (₱{itemCost.toFixed(2)} • {priceInfo.formattedPrice})
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </section>
 
