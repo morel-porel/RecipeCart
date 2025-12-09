@@ -1,9 +1,11 @@
+// recipecart-frontend/src/pages/OrderHistory.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
 import { usePopup } from '../components/CustomPopup';
+import { formatIngredientPrice, formatQuantityWithUnit } from '../utils/priceUtils';
 
 const OrderHistory = () => {
   const navigate = useNavigate();
@@ -120,30 +122,36 @@ const OrderHistory = () => {
                       <div className="cart-container">
                         <div className="cart-header">
                           <div className="header-item">Item</div>
-                          <div className="header-price">Price</div>
-                          <div className="header-quantity">Quantity</div>
+                          <div className="header-price">Quantity</div>
+                          <div className="header-quantity">Unit Price</div>
                           <div className="header-total">Total</div>
                         </div>
 
-                        {items.map(item => (
-                          <div key={item.id} className="cart-item">
-                            <div className="item-info">
-                              <div className="item-image">🥚</div>
-                              <div className="item-details">
-                                <p className="item-name">{item.ingredient.name}</p>
-                                <p className="item-unit">{item.ingredient.unit}</p>
+                        {items.map(item => {
+                          const priceInfo = formatIngredientPrice(item.ingredient);
+                          const quantityDisplay = formatQuantityWithUnit(item.quantity, item.ingredient.unit);
+                          const unitPrice = item.priceAtPurchase / item.quantity;
+
+                          return (
+                            <div key={item.id} className="cart-item">
+                              <div className="item-info">
+                                <div className="item-image">🥚</div>
+                                <div className="item-details">
+                                  <p className="item-name">{item.ingredient.name}</p>
+                                  <p className="item-unit">{priceInfo.formattedPrice}</p>
+                                </div>
                               </div>
+
+                              <div className="item-price">{quantityDisplay}</div>
+
+                              <div className="item-quantity">
+                                <span className="quantity-value">₱{unitPrice.toFixed(2)}</span>
+                              </div>
+
+                              <div className="item-total">₱{item.priceAtPurchase.toFixed(2)}</div>
                             </div>
-
-                            <div className="item-price">₱{(item.priceAtPurchase / item.quantity).toFixed(2)}</div>
-
-                            <div className="item-quantity">
-                              <span className="quantity-value">{item.quantity}</span>
-                            </div>
-
-                            <div className="item-total">₱{item.priceAtPurchase.toFixed(2)}</div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
