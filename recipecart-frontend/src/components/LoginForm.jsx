@@ -40,12 +40,13 @@ function LoginForm() {
 
       // Save user to localStorage
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userRole', user.role); // Store role separately for easy access
 
       // Show success message
-      showPopup('Logged in successfully!', 'success');
+      showPopup(`Logged in successfully as ${user.role}!`, 'success');
 
-      // Navigate to home page
-      navigate('/home');
+      // Route based on user role
+      routeByRole(user.role);
 
     } catch (err) {
       console.error('Login error:', err);
@@ -61,6 +62,25 @@ function LoginForm() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  /**
+   * Route user to appropriate page based on their role
+   */
+  const routeByRole = (role) => {
+    switch(role?.toUpperCase()) {
+      case 'CASHIER':
+        navigate('/cashier/dashboard');
+        break;
+      case 'ADMIN':
+        navigate('/admin/dashboard');
+        break;
+      case 'USER':
+      case 'CUSTOMER':
+      default:
+        navigate('/home');
+        break;
     }
   };
 
