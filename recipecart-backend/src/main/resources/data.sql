@@ -180,3 +180,5 @@ INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES
 -- Simple Miso Soup (Recipe ID: 10)
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (10, 134, 30, 'g') ON DUPLICATE KEY UPDATE quantity=quantity; -- Miso Paste
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (10, 120, 0.5, 'blocks') ON DUPLICATE KEY UPDATE quantity=quantity; -- Tofu
+
+

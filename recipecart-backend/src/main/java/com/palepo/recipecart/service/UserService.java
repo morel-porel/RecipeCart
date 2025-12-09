@@ -12,6 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+/**
+ * CHANGES MADE TO SUPPORT UNIFIED LOGIN FOR CASHIERS:
+ * 1. Added default role assignment ("CUSTOMER") in registerUser() if no role provided
+ * 2. Enhanced loginUser() method documentation to clarify it works for ALL user types
+ * 3. No structural changes needed - existing code already supports multiple roles
+ */
+
 @Service
 public class UserService {
 
@@ -43,12 +50,17 @@ public class UserService {
         String hashed = passwordEncoder.encode(rawPassword);
         newUser.setPassword(hashed);
 
+        // CHANGE: Set default role if not provided (supports creating users with any role)
+        if (newUser.getRole() == null || newUser.getRole().isEmpty()) {
+            newUser.setRole("CUSTOMER");
+        }
+
         // Ensure UserProfile exists and is linked
         UserProfile profile = newUser.getUserProfile();
         if (profile == null) {
             profile = new UserProfile();
         }
-        profile.setUser(newUser); // link both sides
+        profile.setUser(newUser);
         newUser.setUserProfile(profile);
 
         // Save user (profile cascades due to CascadeType.ALL on the relation)
@@ -57,15 +69,42 @@ public class UserService {
     }
 
     /**
-     * Get user profile - NEW METHOD
+     * CHANGE: Enhanced documentation to clarify this method works for ALL user roles
+     * Login user - works for CUSTOMER, CASHIER, and ADMIN users
+     * Accepts either email or username as login identifier
+     * Returns the full User object including role information for frontend routing
+     */
+    public User loginUser(String emailOrUsername, String password) {
+        // Try to find user by email first
+        Optional<User> userByEmail = userRepository.findByEmail(emailOrUsername);
+
+        // If not found by email, try username
+        Optional<User> userByUsername = userRepository.findByUsername(emailOrUsername);
+
+        User user = userByEmail.orElse(userByUsername.orElse(null));
+
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        // Verify password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
+    }
+
+    /**
+     * Get user profile
      */
     @Transactional
     public UserProfile getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        
+
         UserProfile profile = user.getUserProfile();
-        
+
         if (profile == null) {
             // Create empty profile if it doesn't exist
             profile = new UserProfile();
@@ -74,7 +113,7 @@ public class UserService {
             user.setUserProfile(profile);
             userRepository.save(user);
         }
-        
+
         // Force initialization of lazy collections
         if (profile.getAllergies() != null) {
             profile.getAllergies().size();
@@ -82,7 +121,7 @@ public class UserService {
         if (profile.getFavoriteCuisines() != null) {
             profile.getFavoriteCuisines().size();
         }
-        
+
         return profile;
     }
 
@@ -116,32 +155,11 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
     }
 
-    public User loginUser(String emailOrUsername, String password) {
-        // Try to find user by email first
-        Optional<User> userByEmail = userRepository.findByEmail(emailOrUsername);
-        
-        // If not found by email, try username
-        Optional<User> userByUsername = userRepository.findByUsername(emailOrUsername);
-        
-        User user = userByEmail.orElse(userByUsername.orElse(null));
-        
-        if (user == null) {
-            throw new EntityNotFoundException("User not found");
-        }
-        
-        // Verify password
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-        
-        return user;
-    }
-
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        
+
         // Due to CascadeType.ALL, this will also delete:
         // - UserProfile
         // - ShoppingCart (and CartItems via orphanRemoval)
