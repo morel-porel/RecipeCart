@@ -181,4 +181,13 @@ INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (10, 134, 30, 'g') ON DUPLICATE KEY UPDATE quantity=quantity; -- Miso Paste
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (10, 120, 0.5, 'blocks') ON DUPLICATE KEY UPDATE quantity=quantity; -- Tofu
 
+# 3. Insert test users
+INSERT INTO users (username, email, password, role)
+VALUES ('john_customer', 'customer@test.com', '$2a$10$slYQmyNdGzin7olVN3p5be4DFH5yO8/LewY5pmQe9S5FlN0WK8mZm', 'USER');
+
+INSERT INTO users (username, email, password, role)
+VALUES ('jane_cashier', 'cashier@test.com', '$2a$10$slYQmyNdGzin7olVN3p5be4DFH5yO8/LewY5pmQe9S5FlN0WK8mZm', 'CASHIER');
+
+INSERT INTO users (username, email, password, role)
+VALUES ('admin_user', 'admin@test.com', '$2a$10$slYQmyNdGzin7olVN3p5be4DFH5yO8/LewY5pmQe9S5FlN0WK8mZm', 'ADMIN');
 
