@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins="http://localhost:5173")
@@ -23,7 +25,6 @@ public class AuthController {
     public ResponseEntity<UserRegistrationResponse> register(@RequestBody User newUser) {
         User savedUser = userService.registerUser(newUser);
 
-        // Return only essential info (avoid circular references)
         UserRegistrationResponse response = new UserRegistrationResponse(
             savedUser.getId(),
             savedUser.getUsername(),
@@ -32,6 +33,24 @@ public class AuthController {
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // Update basic user info endpoint (NEW)
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UserRegistrationResponse> updateUser(
+            @PathVariable Long userId, 
+            @RequestBody Map<String, String> updates) {
+        
+        User updatedUser = userService.updateUserBasicInfo(userId, updates);
+        
+        UserRegistrationResponse response = new UserRegistrationResponse(
+            updatedUser.getId(),
+            updatedUser.getUsername(),
+            updatedUser.getEmail(),
+            updatedUser.getRole()
+        );
+        
+        return ResponseEntity.ok(response);
     }
 
     // Update profile endpoint
@@ -63,7 +82,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // Get user by ID (useful for testing)
+    // Get user by ID
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserRegistrationResponse> getUserById(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
@@ -100,7 +119,7 @@ public class AuthController {
         }
     }
 
-    // Response DTO to avoid circular references
+    // Response DTO
     public static class UserRegistrationResponse {
         private Long id;
         private String username;
@@ -114,7 +133,6 @@ public class AuthController {
             this.role = role;
         }
 
-        // Getters
         public Long getId() {
             return id;
         }
@@ -131,7 +149,6 @@ public class AuthController {
             return role;
         }
 
-        // Setters (optional, but good practice)
         public void setId(Long id) {
             this.id = id;
         }
