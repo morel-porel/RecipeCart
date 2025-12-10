@@ -18,7 +18,7 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<Recipe> findRecipesByFilters(String cuisine, Set<String> dietaryTags, String excludeAllergen) {
+    public List<Recipe> findRecipesByFilters(Set<String> cuisines, Set<String> dietaryTags, String excludeAllergen) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Recipe> query = cb.createQuery(Recipe.class);
         Root<Recipe> recipe = query.from(Recipe.class);
@@ -27,15 +27,26 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
         List<Predicate> predicates = new ArrayList<>();
 
         // 1. Add CUISINE filter if provided
-        if (cuisine != null && !cuisine.trim().isEmpty()) {
-            predicates.add(cb.equal(cb.lower(recipe.get("cuisine")), cuisine.toLowerCase()));
+        if (cuisines != null && !cuisines.isEmpty()) {
+            List<Predicate> cuisineOptions  = new ArrayList<>();
+            for (String c : cuisines) {
+                if (c != null && !c.trim().isEmpty()) {
+                    cuisineOptions.add(cb.equal(cb.lower(recipe.get("cuisine")), c.trim().toLowerCase()));
+                }
+            }
+            if (!cuisineOptions.isEmpty()) {
+                predicates.add(cb.or(cuisineOptions.toArray(new Predicate[0])));
+            }
+
         }
 
         // 2. Add DIETARY TAGS filter if provided
         if (dietaryTags != null && !dietaryTags.isEmpty()) {
             // This creates a predicate for each tag and ORs them together if needed,
             for (String tag : dietaryTags) {
-                predicates.add(cb.isMember(tag, recipe.get("dietaryTags")));
+                if (tag != null && !tag.isEmpty()) {
+                    predicates.add(cb.isMember(tag, recipe.get("dietaryTags")));
+                }
             }
         }
 

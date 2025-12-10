@@ -46,17 +46,23 @@ public class RecipeService {
      */
     public List<Recipe> searchRecipes(String name, String cuisine, Set<String> dietaryTags, String excludeAllergen) {
 
-        boolean hasName = name != null && !name.trim().isEmpty();
-        if (hasName) {
+        // ... name check logic remains the same ...
+        if (name != null && !name.trim().isEmpty()) {
             return recipeRepository.findByNameContainingIgnoreCase(name);
         }
 
-        boolean hasAnyFilter = (cuisine != null && !cuisine.trim().isEmpty()) ||
+        // Convert single cuisine string to Set for compatibility with the new repo method
+        Set<String> cuisineSet = null;
+        if (cuisine != null && !cuisine.trim().isEmpty()) {
+            cuisineSet = Set.of(cuisine);
+        }
+
+        boolean hasAnyFilter = (cuisineSet != null && !cuisineSet.isEmpty()) ||
                 (dietaryTags != null && !dietaryTags.isEmpty()) ||
                 (excludeAllergen != null && !excludeAllergen.trim().isEmpty());
 
         if (hasAnyFilter) {
-            return recipeRepository.findRecipesByFilters(cuisine, dietaryTags, excludeAllergen);
+            return recipeRepository.findRecipesByFilters(cuisineSet, dietaryTags, excludeAllergen);
         } else {
             return recipeRepository.findAll();
         }
@@ -98,12 +104,33 @@ public class RecipeService {
             return Collections.emptyList();
         }
 
-        String preferredCuisine = profile.getFavoriteCuisines().stream().findFirst().orElse(null);
-        String dietaryPlan = profile.getDietaryPlan();
-        String excludeAllergen = profile.getAllergies().stream().findFirst().orElse(null);
+        // 1. Get ALL favorite cuisines
+        Set<String> preferredCuisines = profile.getFavoriteCuisines(); // This returns a Set<String>
 
-        if (preferredCuisine != null) {
-            return recipeRepository.findRecipesByFilters(preferredCuisine, Set.of(dietaryPlan), excludeAllergen);
+        // 2. Get Diet
+        String dietaryPlan = profile.getDietaryPlan();
+        Set<String> dietaryTags;
+        if (dietaryPlan != null && !dietaryPlan.trim().isEmpty()) {
+            dietaryTags = Set.of(dietaryPlan);
+        } else {
+            dietaryTags = Collections.emptySet();
+        }
+
+        // 3. Get Allergen
+        String excludeAllergen = profile.getAllergies().stream()
+                .findFirst()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .orElse(null);
+
+        // 4. Check if ANY preference is set
+        boolean hasCuisine = preferredCuisines != null && !preferredCuisines.isEmpty();
+        boolean hasDiet = !dietaryTags.isEmpty();
+        boolean hasAllergen = excludeAllergen != null;
+
+        if (hasCuisine || hasDiet || hasAllergen) {
+            // Pass the SET of cuisines
+            return recipeRepository.findRecipesByFilters(preferredCuisines, dietaryTags, excludeAllergen);
         }
 
         return Collections.emptyList();

@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // This method specifically handles the EntityNotFoundException that your services throw
+    // This method specifically handles the EntityNotFoundException that services throw
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         // Create our custom error response object

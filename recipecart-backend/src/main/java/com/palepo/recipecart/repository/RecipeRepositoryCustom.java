@@ -5,5 +5,5 @@ import java.util.Set;
 import java.util.List;
 
 public interface RecipeRepositoryCustom {
-    List<Recipe> findRecipesByFilters(String cuisine, Set<String> dietaryTags, String excludeAllergen);
+    List<Recipe> findRecipesByFilters(Set<String> cuisines, Set<String> dietaryTags, String excludeAllergen);
 }
