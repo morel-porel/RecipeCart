@@ -71,7 +71,7 @@ function LoginForm() {
   const routeByRole = (role) => {
     switch(role?.toUpperCase()) {
       case 'CASHIER':
-        navigate('/cashier/dashboard');
+        navigate('/cashier');
         break;
       case 'ADMIN':
         navigate('/admin/dashboard');
