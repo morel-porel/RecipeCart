@@ -23,8 +23,8 @@ public class CashierService {
     private final PaymentRepository paymentRepository;
 
     public CashierService(OrderRepository orderRepository,
-                         IngredientRepository ingredientRepository,
-                         PaymentRepository paymentRepository) {
+                          IngredientRepository ingredientRepository,
+                          PaymentRepository paymentRepository) {
         this.orderRepository = orderRepository;
         this.ingredientRepository = ingredientRepository;
         this.paymentRepository = paymentRepository;
@@ -60,10 +60,10 @@ public class CashierService {
         order.setStatus(newStatus);
 
         // If marking as READY_FOR_PICKUP or COMPLETED, ensure payment is processed
-        if ((newStatus == OrderStatus.READY_FOR_PICKUP || newStatus == OrderStatus.COMPLETED) 
-            && order.getPayment() != null 
-            && order.getPayment().getStatus().equals("PENDING")) {
-            
+        if ((newStatus == OrderStatus.READY_FOR_PICKUP || newStatus == OrderStatus.COMPLETED)
+                && order.getPayment() != null
+                && order.getPayment().getStatus().equals("PENDING")) {
+
             Payment payment = order.getPayment();
             payment.setStatus("COMPLETED");
             payment.setPaymentTimestamp(LocalDateTime.now());
@@ -94,6 +94,13 @@ public class CashierService {
         payment.setPaymentTimestamp(LocalDateTime.now());
 
         return paymentRepository.save(payment);
+    }
+
+    /**
+     * Get all ingredients
+     */
+    public List<Ingredient> getAllIngredients() {
+        return ingredientRepository.findAll();
     }
 
     /**
@@ -132,19 +139,19 @@ public class CashierService {
      */
     public DashboardStats getDashboardStats() {
         List<Order> allOrders = orderRepository.findAll();
-        
+
         long processingCount = allOrders.stream()
                 .filter(o -> o.getStatus() == OrderStatus.PROCESSING)
                 .count();
-        
+
         long readyCount = allOrders.stream()
                 .filter(o -> o.getStatus() == OrderStatus.READY_FOR_PICKUP)
                 .count();
-        
+
         long completedCount = allOrders.stream()
                 .filter(o -> o.getStatus() == OrderStatus.COMPLETED)
                 .count();
-        
+
         double totalRevenue = allOrders.stream()
                 .filter(o -> o.getStatus() == OrderStatus.COMPLETED)
                 .mapToDouble(Order::getTotalAmount)
@@ -183,6 +190,4 @@ public class CashierService {
             return totalRevenue;
         }
     }
-
-
 }

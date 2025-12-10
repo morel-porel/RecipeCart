@@ -80,7 +80,7 @@ public class CashierController {
     public ResponseEntity<Order> updateOrderStatus(
             @PathVariable Long orderId,
             @RequestBody Map<String, String> request) {
-        
+
         OrderStatus newStatus = OrderStatus.valueOf(request.get("status"));
         Order updatedOrder = cashierService.updateOrderStatus(orderId, newStatus);
         return ResponseEntity.ok(updatedOrder);
@@ -97,6 +97,16 @@ public class CashierController {
     }
 
     /**
+     * Get all ingredients (for stock management)
+     * GET /api/cashier/ingredients
+     */
+    @GetMapping("/ingredients")
+    public ResponseEntity<List<Ingredient>> getAllIngredients() {
+        List<Ingredient> ingredients = cashierService.getAllIngredients();
+        return ResponseEntity.ok(ingredients);
+    }
+
+    /**
      * Update ingredient stock
      * PUT /api/cashier/ingredients/{ingredientId}/stock
      * Body: { "stockLevel": 100 }
@@ -105,7 +115,7 @@ public class CashierController {
     public ResponseEntity<Ingredient> updateStock(
             @PathVariable Long ingredientId,
             @RequestBody Map<String, Integer> request) {
-        
+
         Integer newStockLevel = request.get("stockLevel");
         Ingredient updatedIngredient = cashierService.updateStock(ingredientId, newStockLevel);
         return ResponseEntity.ok(updatedIngredient);

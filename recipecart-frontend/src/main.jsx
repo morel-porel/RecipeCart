@@ -16,8 +16,6 @@ import HomePage from './pages/HomePage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 import { UserProvider } from './context/UserContext.jsx';
 
-// import CashierPage from './pages/CashierPage.jsx';
-// import UserOrders from './pages/UserOrders.jsx';
 import OrderDetails from './pages/OrderDetails.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
 import EditRecipePage from './pages/EditRecipePage';
@@ -25,6 +23,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import RecipeListPage from './pages/RecipeListPage';
 
 import CashierPage from './pages/CashierPage.jsx';
+import StockPage from './pages/StockPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx';
 
@@ -50,7 +49,6 @@ const router = createBrowserRouter([
         path: 'preferences',
         element: <PreferencesPage />,
       },
-      // ✅ ADD YOUR NEW ROUTES HERE
       {
         path: 'cart',
         element: <Cart />,
@@ -63,27 +61,26 @@ const router = createBrowserRouter([
         path: 'orders',
         element: <OrderHistory />,
       },
-
-      { path: 'home', element: <HomePage />},
-      { path: 'recipes/:id', element: <RecipeDetailPage /> },
-
-      //{ path: 'cashier', element: <CashierPage /> },
-
+      { 
+        path: 'home', 
+        element: <HomePage />
+      },
+      { 
+        path: 'recipes/:id', 
+        element: <RecipeDetailPage /> 
+      },
       {
         path: 'cashier', 
         element: <ProtectedRoute requiredRole="CASHIER" component={CashierPage} />,
       },
-
       {
-        path: 'order-details/:orderId',   // URL: /order-details/:orderId
+        path: 'stock',
+        element: <ProtectedRoute requiredRole="CASHIER" component={StockPage} />,
+      },
+      {
+        path: 'order-details/:orderId',
         element: <OrderDetails />,
       },
-
-      // {
-      //   path: 'user-orders',   // URL: /user-orders
-      //   element: <UserOrders />,
-      // },
-      
       {
         path: 'order-summary',
         element: <OrderHistory />,
@@ -96,9 +93,8 @@ const router = createBrowserRouter([
         path: 'profile',
         element: <ProfilePage />,
       },
-
       {
-        path: 'unauthorized', // ✅ ADD THIS ROUTE
+        path: 'unauthorized',
         element: <UnauthorizedPage />,
       },
       {
