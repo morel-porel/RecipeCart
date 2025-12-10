@@ -1,0 +1,390 @@
+/* Stock Page Layout */
+.page-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-top: 80px;
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* Header Section */
+.stock-header {
+  margin-bottom: 30px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+  transform: translateX(-2px);
+}
+
+.stock-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Controls Section */
+.stock-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+  background-color: #0056b3;
+}
+
+/* Stock Filters */
+.stock-filters {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: 2px solid #dee2e6;
+  background-color: white;
+  color: #6c757d;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.filter-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Table Container */
+.stock-table-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  margin-bottom: 30px;
+}
+
+/* Stock Table */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stock-table thead {
+  background-color: #f8f9fa;
+}
+
+.stock-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.stock-table td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 14px;
+}
+
+.stock-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.stock-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.stock-table tbody tr.out-of-stock {
+  background-color: #fff5f5;
+}
+
+.stock-table tbody tr.low-stock {
+  background-color: #fffbf0;
+}
+
+.centered-cell {
+  text-align: center;
+}
+
+.ingredient-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.stock-value {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+/* Stock Input */
+.stock-input {
+  width: 80px;
+  padding: 8px;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.stock-input:focus {
+  outline: none;
+  border-color: #0056b3;
+}
+
+/* Stock Badges */
+.stock-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.stock-badge.in-stock {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.stock-badge.low-stock {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.stock-badge.out-of-stock {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Stock Summary */
+.stock-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.summary-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #007bff;
+  transition: transform 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.summary-card.warning {
+  border-left-color: #ffc107;
+}
+
+.summary-card.danger {
+  border-left-color: #dc3545;
+}
+
+.summary-card h3 {
+  margin: 0 0 10px 0;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .stock-table {
+    font-size: 13px;
+  }
+  
+  .stock-table th,
+  .stock-table td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 20px 10px;
+  }
+
+  .stock-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar {
+    max-width: 100%;
+  }
+
+  .stock-filters {
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .stock-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .summary-card {
+    padding: 20px;
+  }
+
+  .summary-value {
+    font-size: 28px;
+  }
+}
