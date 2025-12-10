@@ -115,7 +115,6 @@ const Cart = () => {
           </div>
           <div className="item-details">
             <p className="item-name">{item.ingredient.name}</p>
-            
             {item.recipeSource && !groupedView && (
               <p className="item-recipe-tag">From: {item.recipeSource}</p>
             )}

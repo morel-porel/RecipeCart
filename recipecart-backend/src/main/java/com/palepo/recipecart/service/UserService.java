@@ -10,14 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Map;
 import java.util.Optional;
-
-/**
- * CHANGES MADE TO SUPPORT UNIFIED LOGIN FOR CASHIERS:
- * 1. Added default role assignment ("CUSTOMER") in registerUser() if no role provided
- * 2. Enhanced loginUser() method documentation to clarify it works for ALL user types
- * 3. No structural changes needed - existing code already supports multiple roles
- */
 
 @Service
 public class UserService {
@@ -50,7 +44,7 @@ public class UserService {
         String hashed = passwordEncoder.encode(rawPassword);
         newUser.setPassword(hashed);
 
-        // CHANGE: Set default role if not provided (supports creating users with any role)
+        // Set default role if not provided
         if (newUser.getRole() == null || newUser.getRole().isEmpty()) {
             newUser.setRole("CUSTOMER");
         }
@@ -63,17 +57,51 @@ public class UserService {
         profile.setUser(newUser);
         newUser.setUserProfile(profile);
 
-        // Save user (profile cascades due to CascadeType.ALL on the relation)
         User saved = userRepository.save(newUser);
         return saved;
     }
 
     /**
-     * CHANGE: Enhanced documentation to clarify this method works for ALL user roles
-     * Login user - works for CUSTOMER, CASHIER, and ADMIN users
-     * Accepts either email or username as login identifier
-     * Returns the full User object including role information for frontend routing
+     * Update basic user information (username, email)
      */
+    @Transactional
+    public User updateUserBasicInfo(Long userId, Map<String, String> updates) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        // Update username if provided and different
+        if (updates.containsKey("username") && !updates.get("username").equals(user.getUsername())) {
+            String newUsername = updates.get("username");
+            // Check if username is already taken by another user
+            Optional<User> existingUser = userRepository.findByUsername(newUsername);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(userId)) {
+                throw new UserAlreadyExistsException("Username already taken");
+            }
+            user.setUsername(newUsername);
+        }
+
+        // Update email if provided and different
+        if (updates.containsKey("email") && !updates.get("email").equals(user.getEmail())) {
+            String newEmail = updates.get("email");
+            // Check if email is already taken by another user
+            Optional<User> existingUser = userRepository.findByEmail(newEmail);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(userId)) {
+                throw new UserAlreadyExistsException("Email already registered");
+            }
+            user.setEmail(newEmail);
+        }
+
+        // Update password if provided (must be hashed)
+        if (updates.containsKey("password") && updates.get("password") != null 
+            && !updates.get("password").trim().isEmpty()) {
+            String newPassword = updates.get("password");
+            String hashedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(hashedPassword);
+        }
+
+        return userRepository.save(user);
+    }
+
     public User loginUser(String emailOrUsername, String password) {
         // Try to find user by email first
         Optional<User> userByEmail = userRepository.findByEmail(emailOrUsername);
@@ -95,9 +123,6 @@ public class UserService {
         return user;
     }
 
-    /**
-     * Get user profile
-     */
     @Transactional
     public UserProfile getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
@@ -160,10 +185,6 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
-        // Due to CascadeType.ALL, this will also delete:
-        // - UserProfile
-        // - ShoppingCart (and CartItems via orphanRemoval)
-        // - Orders (and OrderItems via orphanRemoval)
         userRepository.delete(user);
     }
 }

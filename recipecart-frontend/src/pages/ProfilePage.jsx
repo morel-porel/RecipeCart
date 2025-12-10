@@ -79,13 +79,59 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      // Update basic user info (if endpoint exists)
-      // For now, we'll just show a message since we don't have an update user endpoint
-      showPopup('User info update not yet implemented in backend', 'info');
+      // Validate inputs
+      if (!formData.username.trim()) {
+        showPopup('Username cannot be empty', 'error');
+        return;
+      }
+      
+      if (!formData.email.trim()) {
+        showPopup('Email cannot be empty', 'error');
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        showPopup('Please enter a valid email address', 'error');
+        return;
+      }
+
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      
+      // Update user info via API
+      const response = await axios.put(
+        `${API_BASE_URL}/users/${storedUser.id}`,
+        {
+          username: formData.username,
+          email: formData.email,
+        }
+      );
+
+      // Update local state
+      setUser(response.data);
+      
+      // Update localStorage with new user data
+      const updatedStoredUser = {
+        ...storedUser,
+        username: response.data.username,
+        email: response.data.email,
+      };
+      localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+      
       setIsEditing(false);
+      showPopup('Profile updated successfully!', 'success');
+      
     } catch (error) {
       console.error('Error updating profile:', error);
-      showPopup('Failed to update profile', 'error');
+      
+      if (error.response?.data?.message) {
+        showPopup(error.response.data.message, 'error');
+      } else if (error.response?.status === 409) {
+        showPopup('Username or email already taken', 'error');
+      } else {
+        showPopup('Failed to update profile. Please try again.', 'error');
+      }
     }
   };
 
@@ -93,6 +139,7 @@ const ProfilePage = () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
       localStorage.removeItem('user');
+      showPopup('Logged out successfully', 'success');
       navigate('/login');
     }
   };
@@ -174,13 +221,14 @@ const ProfilePage = () => {
               <h2 className="section-title">Account Information</h2>
               
               <div className="detail-group">
-                <label className="detail-label">Name</label>
+                <label className="detail-label">Username</label>
                 <div className="detail-value">
                   {isEditing ? (
                     <input
                       type="text"
                       value={formData.username}
                       onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      placeholder="Enter username"
                     />
                   ) : (
                     user.username
@@ -196,6 +244,7 @@ const ProfilePage = () => {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="Enter email"
                     />
                   ) : (
                     user.email
