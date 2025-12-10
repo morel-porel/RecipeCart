@@ -22,7 +22,7 @@ import OrderDetails from './pages/OrderDetails.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 
-import CashierDashboard from './pages/CashierDashboard.jsx';
+import CashierPage from './pages/CashierPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx';
 
@@ -68,8 +68,8 @@ const router = createBrowserRouter([
       //{ path: 'cashier', element: <CashierPage /> },
 
       {
-        path: 'cashier/dashboard', 
-        element: <ProtectedRoute requiredRole="CASHIER" component={CashierDashboard} />,
+        path: 'cashier', 
+        element: <ProtectedRoute requiredRole="CASHIER" component={CashierPage} />,
       },
 
       {

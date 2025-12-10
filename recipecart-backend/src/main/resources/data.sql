@@ -348,3 +348,39 @@ INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (34, 126, 200, 'g') ON DUPLICATE KEY UPDATE quantity=quantity;
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (34, 109, 2, 'pcs') ON DUPLICATE KEY UPDATE quantity=quantity;
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (34, 141, 100, 'g') ON DUPLICATE KEY UPDATE quantity=quantity;
+
+-- ===============================================================================================
+-- SECTION: PREMADE USERS (CASHIER AND ADMIN)
+-- ===============================================================================================
+-- NOTE: These passwords are BCrypt hashed. The plain text passwords are:
+-- - Cashier account: username="cashier1", password="cashier123"
+-- - Admin account: username="admin1", password="admin123"
+-- - Regular user: username="user1", password="user123"
+-- 
+-- BCrypt hash format: $2a$10$[salt][hash]
+-- These hashes were generated with BCrypt strength 10 (default for Spring Security BCryptPasswordEncoder)
+
+-- CASHIER ACCOUNT
+-- Username: cashier1
+-- Password: cashier123
+INSERT INTO users (id, username, email, password, role) 
+VALUES (1, 'cashier1', 'cashier@recipecart.com', '$2a$12$8v67Mo0tE4j2ed77whSAfubdwwbZQ3RCXH65nx9PakqymC6WBrx4G', 'CASHIER') 
+ON DUPLICATE KEY UPDATE username=username;
+
+-- ADMIN ACCOUNT  
+-- Username: admin1
+-- Password: admin123
+-- INSERT INTO users (id, username, email, password, role) 
+-- VALUES (2, 'admin1', 'admin@recipecart.com', '$2a$12$6HraTx56Vgxid833e66.OeZpsLEmo0LTkn/3GW2gWfNLKnDmsJBKm', 'ADMIN') 
+-- ON DUPLICATE KEY UPDATE username=username;
+
+-- REGULAR USER ACCOUNT
+-- Username: user1  
+-- Password: user123
+INSERT INTO users (id, username, email, password, role) 
+VALUES (2, 'user1', 'user@recipecart.com', '$2a$12$Xsc1yV23nToBzoA2yJKOYu9V2ihFZH9W8lotFuOnthxOgHXXmjCQu', 'USER') 
+ON DUPLICATE KEY UPDATE username=username;
+
+-- Create empty user profiles for these users
+INSERT INTO user_profiles (user_id) VALUES (1) ON DUPLICATE KEY UPDATE user_id=user_id;
+INSERT INTO user_profiles (user_id) VALUES (2) ON DUPLICATE KEY UPDATE user_id=user_id;
