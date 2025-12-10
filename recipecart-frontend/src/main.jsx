@@ -20,7 +20,9 @@ import { UserProvider } from './context/UserContext.jsx';
 // import UserOrders from './pages/UserOrders.jsx';
 import OrderDetails from './pages/OrderDetails.jsx';
 import AddRecipePage from './pages/AddRecipePage.jsx';
+import EditRecipePage from './pages/EditRecipePage';
 import ProfilePage from './pages/ProfilePage.jsx';
+import RecipeListPage from './pages/RecipeListPage';
 
 import CashierPage from './pages/CashierPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
@@ -99,7 +101,11 @@ const router = createBrowserRouter([
         path: 'unauthorized', // ✅ ADD THIS ROUTE
         element: <UnauthorizedPage />,
       },
-
+      {
+        path: 'cashier/edit-recipe/:id', 
+        element: <EditRecipePage />,
+      },
+      { path: 'cashier/recipes', element: <RecipeListPage /> },
     ],
   },
 ]);

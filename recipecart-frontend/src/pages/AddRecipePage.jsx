@@ -127,6 +127,12 @@ function AddRecipePage() {
     <div>
       <MainNavbar />
       <div className="add-recipe-container">
+        <button 
+            className="back-btn" 
+            onClick={() => navigate(-1)}
+        >
+            ← Back
+        </button>
         <h1>Add a New Recipe</h1>
         <form onSubmit={handleSubmit} className="add-recipe-form">
           

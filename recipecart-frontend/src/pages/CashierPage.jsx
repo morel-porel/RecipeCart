@@ -193,9 +193,10 @@ export default function CashierPage() {
               <span className="new-orders-title">Orders Management</span>
               <button 
                 className="add-recipe-nav-btn"
-                onClick={() => navigate('/add-recipe')}
+                style={{ backgroundColor: '#FF9800', marginLeft: '10px' }} // Orange to distinguish it
+                onClick={() => navigate('/cashier/recipes')}
               >
-                + Add New Recipe
+                Manage Recipes
               </button>
             </div>
             

@@ -70,20 +70,41 @@ public class RecipeService {
 
     @Transactional
     public Recipe updateRecipe(Long id, Recipe recipeDetails) {
+        // 1. Find the existing recipe
         Recipe existingRecipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Recipe not found with ID: " + id));
 
+        // 2. Update basic fields
         existingRecipe.setName(recipeDetails.getName());
         existingRecipe.setInstructions(recipeDetails.getInstructions());
         existingRecipe.setNutritionFacts(recipeDetails.getNutritionFacts());
         existingRecipe.setCuisine(recipeDetails.getCuisine());
+        existingRecipe.setImageUrl(recipeDetails.getImageUrl());
 
+        // 3. Update Collections (Tags & Allergens)
         existingRecipe.getDietaryTags().clear();
-        existingRecipe.getDietaryTags().addAll(recipeDetails.getDietaryTags());
+        if (recipeDetails.getDietaryTags() != null) {
+            existingRecipe.getDietaryTags().addAll(recipeDetails.getDietaryTags());
+        }
 
         existingRecipe.getAllergenInfo().clear();
-        existingRecipe.getAllergenInfo().addAll(recipeDetails.getAllergenInfo());
+        if (recipeDetails.getAllergenInfo() != null) {
+            existingRecipe.getAllergenInfo().addAll(recipeDetails.getAllergenInfo());
+        }
 
+        // 4. Update Ingredients
+        // We clear the current list and replace it with the new incoming list
+        existingRecipe.getRecipeIngredients().clear();
+
+        if (recipeDetails.getRecipeIngredients() != null) {
+            for (var ri : recipeDetails.getRecipeIngredients()) {
+                // IMPORTANT: We must re-link the child to the parent
+                ri.setRecipe(existingRecipe);
+                existingRecipe.getRecipeIngredients().add(ri);
+            }
+        }
+
+        // 5. Save
         return recipeRepository.save(existingRecipe);
     }
 
