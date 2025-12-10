@@ -116,7 +116,7 @@ function AddRecipePage() {
     try {
       await axios.post('http://localhost:8080/api/recipes', newRecipeData);
       showPopup('Recipe created successfully!', 'success');
-      navigate('/home');
+      navigate('/cashier');
     } catch (error) {
       console.error("Failed to create recipe:", error);
       showPopup('Error creating recipe.', 'error');
