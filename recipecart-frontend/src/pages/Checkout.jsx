@@ -4,6 +4,7 @@ import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/Checkout.css';
 import { usePopup } from '../components/CustomPopup';
+import { formatIngredientPrice, calculateItemTotal, formatQuantityWithUnit } from '../utils/priceUtils';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -244,12 +245,23 @@ const Checkout = () => {
             <h3 className="subsection-title">Order Summary</h3>
 
             <div className="summary-items">
-              {cart.cart.items.map((item) => (
-                <div key={item.id} className="summary-item">
-                  <span>{item.ingredient.name} x {item.quantity}</span>
-                  <span>₱{(item.ingredient.price * item.quantity).toFixed(2)}</span>
-                </div>
-              ))}
+              {cart.cart.items.map((item) => {
+                const priceInfo = formatIngredientPrice(item.ingredient);
+                const itemTotal = calculateItemTotal(item.ingredient, item.quantity);
+                const quantityDisplay = formatQuantityWithUnit(item.quantity, item.ingredient.unit);
+
+                return (
+                  <div key={item.id} className="summary-item">
+                    <div className="summary-item-details">
+                      <span className="summary-item-name">{item.ingredient.name}</span>
+                      <span className="summary-item-quantity">
+                        {quantityDisplay}
+                      </span>
+                    </div>
+                    <span className="summary-item-total">₱{itemTotal.toFixed(2)}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="summary-total">
@@ -265,7 +277,7 @@ const Checkout = () => {
             disabled={processing}
             className="confirm-button"
           >
-            {processing ? 'Processing...' : 'Confirm'}
+            {processing ? 'Processing...' : 'Confirm Order'}
           </button>
 
           <button

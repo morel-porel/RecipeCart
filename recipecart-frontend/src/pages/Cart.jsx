@@ -62,6 +62,7 @@ const Cart = () => {
         `${API_BASE_URL}/cart/${userId}/items/${cartItemId}`
       );
       setCart(response.data);
+      showPopup('Item removed from cart', 'success');
     } catch (err) {
       showPopup('Failed to remove item', 'error');
     }
@@ -114,7 +115,7 @@ const Cart = () => {
           </div>
           <div className="item-details">
             <p className="item-name">{item.ingredient.name}</p>
-            <p className="item-unit">{priceInfo.formattedPrice}</p>
+            
             {item.recipeSource && !groupedView && (
               <p className="item-recipe-tag">From: {item.recipeSource}</p>
             )}
@@ -122,7 +123,7 @@ const Cart = () => {
         </div>
 
         <div className="item-price">
-          {quantityDisplay}
+          {priceInfo.formattedPrice}
         </div>
 
         <div className="item-quantity">
@@ -133,7 +134,10 @@ const Cart = () => {
           >
             -
           </button>
-          <span className="quantity-value">{item.quantity}</span>
+          <div className="quantity-display">
+            <span className="quantity-value">{item.quantity}</span>
+            <span className="quantity-unit">{item.ingredient.unit}</span>
+          </div>
           <button
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
             className="quantity-btn"
@@ -210,9 +214,9 @@ const Cart = () => {
                     <div className="cart-container">
                       <div className="cart-header">
                         <div className="header-item">Item</div>
-                        <div className="header-price">Quantity</div>
-                        <div className="header-quantity">Actions</div>
-                        <div className="header-total">Total</div>
+                        <div className="header-price">Price</div>
+                        <div className="header-quantity">Quantity</div>
+                        <div className="header-total">Subtotal</div>
                       </div>
 
                       {items.map(renderCartItem)}
@@ -223,10 +227,10 @@ const Cart = () => {
             ) : (
               <div className="cart-container">
                 <div className="cart-header">
-                  <div className="header-item">Shopping Cart</div>
-                  <div className="header-price">Quantity</div>
-                  <div className="header-quantity">Actions</div>
-                  <div className="header-total">Total</div>
+                  <div className="header-item">Item</div>
+                  <div className="header-price">Price</div>
+                  <div className="header-quantity">Quantity</div>
+                  <div className="header-total">Subtotal</div>
                 </div>
 
                 {cart.items?.map(renderCartItem)}

@@ -94,25 +94,24 @@
 
 .cart-header {
   display: grid;
-  grid-template-columns: 5fr 2fr 3fr 2fr;
+  grid-template-columns: 3fr 1.5fr 2fr 1.5fr;
   gap: 1rem;
   padding: 1rem;
   font-weight: 600;
   border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
 .header-price,
-.header-quantity {
-  text-align: center;
-}
-
+.header-quantity,
 .header-total {
-  text-align: right;
+  text-align: center;
 }
 
 .cart-item {
   display: grid;
-  grid-template-columns: 5fr 2fr 3fr 2fr;
+  grid-template-columns: 3fr 1.5fr 2fr 1.5fr;
   gap: 1rem;
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
@@ -144,6 +143,7 @@
   align-items: center;
   justify-content: center;
   font-size: 2rem;
+  flex-shrink: 0;
 }
 
 .item-details {
@@ -154,6 +154,7 @@
 .item-name {
   font-weight: 600;
   margin: 0;
+  font-size: 1rem;
 }
 
 .item-unit {
@@ -218,12 +219,14 @@
 .recipe-group .cart-header,
 .recipe-group .cart-item {
   display: grid;
-  grid-template-columns: 5fr 2fr 3fr 2fr;
+  grid-template-columns: 3fr 1.5fr 2fr 1.5fr;
   gap: 1rem;
 }
 
 .item-price {
   text-align: center;
+  font-weight: 600;
+  color: #1f2937;
 }
 
 .item-quantity {
@@ -241,9 +244,11 @@
   background-color: white;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.quantity-btn:hover {
+.quantity-btn:hover:not(:disabled) {
   background-color: #f3f4f6;
 }
 
@@ -252,9 +257,21 @@
   cursor: not-allowed;
 }
 
+.quantity-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3rem;
+}
+
 .quantity-value {
-  width: 3rem;
-  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.quantity-unit {
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .remove-btn {
@@ -264,15 +281,18 @@
   cursor: pointer;
   font-size: 1.25rem;
   transition: transform 0.2s;
+  padding: 0.25rem;
 }
 
 .remove-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .item-total {
-  text-align: right;
-  font-weight: 600;
+  text-align: center;
+  font-weight: 700;
+  color: #16a34a;
+  font-size: 1.125rem;
 }
 
 .cart-summary {
@@ -322,12 +342,25 @@
   .cart-header,
   .cart-item {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
   
-  .header-price,
-  .header-quantity,
-  .header-total {
-    text-align: left;
+  .cart-header {
+    display: none;
+  }
+  
+  .item-info {
+    grid-column: 1;
+  }
+  
+  .item-price::before {
+    content: 'Price: ';
+    font-weight: 600;
+  }
+  
+  .item-total::before {
+    content: 'Subtotal: ';
+    font-weight: 600;
   }
   
   .item-price,

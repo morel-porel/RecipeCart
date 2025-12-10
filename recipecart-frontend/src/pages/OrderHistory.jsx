@@ -5,7 +5,7 @@ import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import '../assets/styles/OrderHistory.css';
 import { usePopup } from '../components/CustomPopup';
-import { formatIngredientPrice, formatQuantityWithUnit } from '../utils/priceUtils';
+import { formatIngredientPrice, calculateItemTotal, formatQuantityWithUnit } from '../utils/priceUtils';
 
 const OrderHistory = () => {
   const navigate = useNavigate();
@@ -122,9 +122,9 @@ const OrderHistory = () => {
                       <div className="cart-container">
                         <div className="cart-header">
                           <div className="header-item">Item</div>
-                          <div className="header-price">Quantity</div>
-                          <div className="header-quantity">Unit Price</div>
-                          <div className="header-total">Total</div>
+                          <div className="header-price">Price</div>
+                          <div className="header-quantity">Quantity</div>
+                          <div className="header-total">Subtotal</div>
                         </div>
 
                         {items.map(item => {
@@ -138,14 +138,13 @@ const OrderHistory = () => {
                                 <div className="item-image">🥚</div>
                                 <div className="item-details">
                                   <p className="item-name">{item.ingredient.name}</p>
-                                  <p className="item-unit">{priceInfo.formattedPrice}</p>
                                 </div>
                               </div>
 
-                              <div className="item-price">{quantityDisplay}</div>
+                              <div className="item-price">{priceInfo.formattedPrice}</div>
 
                               <div className="item-quantity">
-                                <span className="quantity-value">₱{unitPrice.toFixed(2)}</span>
+                                <span className="quantity-value">{quantityDisplay}</span>
                               </div>
 
                               <div className="item-total">₱{item.priceAtPurchase.toFixed(2)}</div>
