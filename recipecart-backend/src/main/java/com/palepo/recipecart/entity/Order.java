@@ -1,6 +1,6 @@
 package com.palepo.recipecart.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.palepo.recipecart.OrderStatus;
 import com.palepo.recipecart.PaymentType;
 import jakarta.persistence.*;
@@ -16,9 +16,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    // CHANGED: Removed @JsonIgnore and added @JsonIgnoreProperties to only include id and username
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"password", "email", "role", "userProfile", "shoppingCart", "orders"})
     private User user;
 
     @Column(name = "order_date", nullable = false)
@@ -38,8 +39,8 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"order"})
     private Payment payment;
 
     // Constructors, Getters, and Setters...
