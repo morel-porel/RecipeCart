@@ -87,7 +87,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'add-recipe',
-        element: <AddRecipePage />,
+        // element: <AddRecipePage />,
+        element: <ProtectedRoute requiredRole="CASHIER" component={AddRecipePage} />,
       },
       {
         path: 'profile',
@@ -99,9 +100,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'cashier/edit-recipe/:id', 
-        element: <EditRecipePage />,
+        // element: <EditRecipePage />,
+        element: <ProtectedRoute requiredRole="CASHIER" component={EditRecipePage} />,
       },
-      { path: 'cashier/recipes', element: <RecipeListPage /> },
+      { path: 'cashier/recipes', 
+        element: <ProtectedRoute requiredRole="CASHIER" component={RecipeListPage} /> },
     ],
   },
 ]);
