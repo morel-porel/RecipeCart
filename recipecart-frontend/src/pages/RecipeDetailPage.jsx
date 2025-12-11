@@ -209,6 +209,7 @@ function RecipeDetailPage() {
           <section className="ingredients-section">
             <div className="ingredients-section-header">
               <h2>Ingredients</h2>
+              { currentUser &&
               <button 
                 className="add-to-cart-btn" 
                 onClick={handleAddIngredientsToCart}
@@ -216,6 +217,7 @@ function RecipeDetailPage() {
               >
                 {addingToCart ? 'Adding...' : 'Add Ingredients to Cart'}
               </button>
+}
             </div>
             <ul className="ingredients-list">
               {recipe.recipeIngredients?.map(item => {
