@@ -198,6 +198,13 @@ export default function CashierPage() {
               >
                 Manage Recipes
               </button>
+              <button 
+                className="add-recipe-nav-btn"
+                style={{ backgroundColor: '#FF9800', marginLeft: '10px' }} // Orange to distinguish it
+                onClick={() => navigate('/stock')}
+              >
+                Manage Stock
+              </button>
             </div>
             
             {/* Status Filter */}
