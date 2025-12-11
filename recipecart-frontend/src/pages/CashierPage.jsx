@@ -191,20 +191,22 @@ export default function CashierPage() {
           <div className="new-orders-title-wrapper">
             <div className="title-section">
               <span className="new-orders-title">Orders Management</span>
-              <button 
-                className="add-recipe-nav-btn"
-                style={{ backgroundColor: '#FF9800', marginLeft: '10px' }} // Orange to distinguish it
-                onClick={() => navigate('/cashier/recipes')}
-              >
-                Manage Recipes
-              </button>
-              <button 
-                className="add-recipe-nav-btn"
-                style={{ backgroundColor: '#FF9800', marginLeft: '10px' }} // Orange to distinguish it
-                onClick={() => navigate('/stock')}
-              >
-                Manage Stock
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  className="add-recipe-nav-btn"
+                  style={{ backgroundColor: '#FF9800' }}
+                  onClick={() => navigate('/cashier/recipes')}
+                >
+                  Manage Recipes
+                </button>
+                <button 
+                  className="add-recipe-nav-btn"
+                  style={{ backgroundColor: '#FF9800' }}
+                  onClick={() => navigate('/stock')}
+                >
+                  Manage Stock
+                </button>
+              </div>
             </div>
             
             {/* Status Filter */}
